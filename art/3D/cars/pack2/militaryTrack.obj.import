@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/militaryTrack.obj-4986d2e933e2787c8e7313c00b02cff5.mesh"
+
+[deps]
+
+files=[ "res://.import/militaryTrack.obj-4986d2e933e2787c8e7313c00b02cff5.mesh" ]
+
+source_file="res://art/3D/cars/pack2/militaryTrack.obj"
+dest_files=[ "res://.import/militaryTrack.obj-4986d2e933e2787c8e7313c00b02cff5.mesh", "res://.import/militaryTrack.obj-4986d2e933e2787c8e7313c00b02cff5.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

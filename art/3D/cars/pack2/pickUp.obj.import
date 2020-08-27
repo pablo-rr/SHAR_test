@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/pickUp.obj-85a0f8a07c2cc5fbb2ec1252b9bff22a.mesh"
+
+[deps]
+
+files=[ "res://.import/pickUp.obj-85a0f8a07c2cc5fbb2ec1252b9bff22a.mesh" ]
+
+source_file="res://art/3D/cars/pack2/pickUp.obj"
+dest_files=[ "res://.import/pickUp.obj-85a0f8a07c2cc5fbb2ec1252b9bff22a.mesh", "res://.import/pickUp.obj-85a0f8a07c2cc5fbb2ec1252b9bff22a.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

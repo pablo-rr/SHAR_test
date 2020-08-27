@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/tractorShovel.obj-b5a32b7d096e69fa6ef1e755493157c1.mesh"
+
+[deps]
+
+files=[ "res://.import/tractorShovel.obj-b5a32b7d096e69fa6ef1e755493157c1.mesh" ]
+
+source_file="res://art/3D/cars/pack1/tractorShovel.obj"
+dest_files=[ "res://.import/tractorShovel.obj-b5a32b7d096e69fa6ef1e755493157c1.mesh", "res://.import/tractorShovel.obj-b5a32b7d096e69fa6ef1e755493157c1.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

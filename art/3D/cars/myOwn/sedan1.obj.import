@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/sedan1.obj-804dc0ba60f417fa7888888299f3b0af.mesh"
+
+[deps]
+
+files=[ "res://.import/sedan1.obj-804dc0ba60f417fa7888888299f3b0af.mesh" ]
+
+source_file="res://art/3D/cars/myOwn/sedan1.obj"
+dest_files=[ "res://.import/sedan1.obj-804dc0ba60f417fa7888888299f3b0af.mesh", "res://.import/sedan1.obj-804dc0ba60f417fa7888888299f3b0af.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

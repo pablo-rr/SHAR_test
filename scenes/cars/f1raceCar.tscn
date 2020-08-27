@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/cars/templateCar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://art/3D/cars/myOwn/F1racecar1.obj" type="ArrayMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.239216, 0.843137, 0.321569, 1 )
+
+[node name="car" instance=ExtResource( 1 )]
+maxVelocity = 45.0
+engineForce = 150.0
+maxSteeringAngle = 1.0
+driftForce = -3.0
+
+[node name="wheel1" parent="." index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, 1.71834 )
+suspension_stiffness = 75.0
+suspension_max_force = 6000.0
+
+[node name="wheel2" parent="." index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, 1.71834 )
+suspension_stiffness = 75.0
+suspension_max_force = 6000.0
+
+[node name="wheel3" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, -1.60575 )
+suspension_stiffness = 75.0
+suspension_max_force = 6000.0
+
+[node name="wheel4" parent="." index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, -1.60575 )
+suspension_stiffness = 75.0
+suspension_max_force = 6000.0
+
+[node name="collision" parent="." index="4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.574003, 0.0720813 )
+
+[node name="bodyMesh" parent="." index="5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.378658, 0 )
+mesh = ExtResource( 2 )
+material/0 = SubResource( 1 )
+
+[node name="backLightSprite1" parent="." index="7"]
+visible = false
+
+[node name="backLightSprite2" parent="." index="8"]
+visible = false
+
+[node name="backLight1" parent="." index="9"]
+visible = false
+
+[node name="backLight2" parent="." index="10"]
+visible = false

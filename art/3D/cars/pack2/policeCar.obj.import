@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/policeCar.obj-059608ddf4348525937ae5b8f0a0f2fa.mesh"
+
+[deps]
+
+files=[ "res://.import/policeCar.obj-059608ddf4348525937ae5b8f0a0f2fa.mesh" ]
+
+source_file="res://art/3D/cars/pack2/policeCar.obj"
+dest_files=[ "res://.import/policeCar.obj-059608ddf4348525937ae5b8f0a0f2fa.mesh", "res://.import/policeCar.obj-059608ddf4348525937ae5b8f0a0f2fa.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

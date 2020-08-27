@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/race.obj-ba580c5ce0d52a16f6874ac1eb9daa02.mesh"
+
+[deps]
+
+files=[ "res://.import/race.obj-ba580c5ce0d52a16f6874ac1eb9daa02.mesh" ]
+
+source_file="res://art/3D/cars/pack1/race.obj"
+dest_files=[ "res://.import/race.obj-ba580c5ce0d52a16f6874ac1eb9daa02.mesh", "res://.import/race.obj-ba580c5ce0d52a16f6874ac1eb9daa02.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

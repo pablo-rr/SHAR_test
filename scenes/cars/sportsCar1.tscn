@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://scenes/cars/templateCar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://art/3D/cars/myOwn/sportcar1.obj" type="ArrayMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0.796078, 1, 0.992157, 1 )
+roughness = 0.0
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.0588235, 0.0588235, 0.0588235, 1 )
+
+[node name="car" instance=ExtResource( 1 )]
+maxVelocity = 35.0
+engineForce = 100.0
+driftForce = -1.0
+
+[node name="wheel1" parent="." index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, 1.50073 )
+suspension_stiffness = 40.0
+suspension_max_force = 4500.0
+
+[node name="wheel2" parent="." index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, 1.50073 )
+suspension_stiffness = 40.0
+suspension_max_force = 4500.0
+
+[node name="wheel3" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, -1.44368 )
+suspension_stiffness = 40.0
+suspension_max_force = 4500.0
+
+[node name="wheel4" parent="." index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, -1.44368 )
+suspension_stiffness = 40.0
+suspension_max_force = 4500.0
+
+[node name="collision" parent="." index="4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.908503, 0.147399 )
+
+[node name="bodyMesh" parent="." index="5"]
+transform = Transform( 2.50343e-07, 0, -1, 0, 1, 0, 1, 0, 2.50343e-07, 0, 0.50924, 0 )
+mesh = ExtResource( 2 )
+material/0 = SubResource( 1 )
+material/1 = SubResource( 2 )
+
+[node name="backLightSprite1" parent="." index="7"]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0.6, 0.583994, -2.04207 )
+
+[node name="backLightSprite2" parent="." index="8"]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.6, 0.583994, -2.04207 )
+
+[node name="backLight1" parent="." index="9"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.576662, -2.34207 )
+
+[node name="backLight2" parent="." index="10"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.576662, -2.34207 )

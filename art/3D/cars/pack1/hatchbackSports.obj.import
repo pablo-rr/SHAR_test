@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/hatchbackSports.obj-3fdbcff08a15d0bab860cc40b0af3498.mesh"
+
+[deps]
+
+files=[ "res://.import/hatchbackSports.obj-3fdbcff08a15d0bab860cc40b0af3498.mesh" ]
+
+source_file="res://art/3D/cars/pack1/hatchbackSports.obj"
+dest_files=[ "res://.import/hatchbackSports.obj-3fdbcff08a15d0bab860cc40b0af3498.mesh", "res://.import/hatchbackSports.obj-3fdbcff08a15d0bab860cc40b0af3498.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

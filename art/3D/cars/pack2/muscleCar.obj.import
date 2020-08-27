@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/muscleCar.obj-e4c1c36c48a559f60783808d3a6e35ad.mesh"
+
+[deps]
+
+files=[ "res://.import/muscleCar.obj-e4c1c36c48a559f60783808d3a6e35ad.mesh" ]
+
+source_file="res://art/3D/cars/pack2/muscleCar.obj"
+dest_files=[ "res://.import/muscleCar.obj-e4c1c36c48a559f60783808d3a6e35ad.mesh", "res://.import/muscleCar.obj-e4c1c36c48a559f60783808d3a6e35ad.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
