@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=2]
+
+[sub_resource type="ParticlesMaterial" id=1]
+emission_shape = 1
+emission_sphere_radius = 0.45
+direction = Vector3( 0, 1, 0 )
+spread = 5.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 2.0
+
+[sub_resource type="SpatialMaterial" id=2]
+vertex_color_use_as_albedo = true
+albedo_color = Color( 0.858824, 0.858824, 0.858824, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+material = SubResource( 2 )
+radius = 0.2
+height = 0.4
+radial_segments = 32
+rings = 16
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Particles
+
+func init(smoke : Color) -> void:
+	self.process_material.color = smoke
+	print(\"init\")
+"
+
+[node name="smoke" type="Particles"]
+amount = 35
+randomness = 1.0
+process_material = SubResource( 1 )
+draw_pass_1 = SubResource( 3 )
+script = SubResource( 4 )

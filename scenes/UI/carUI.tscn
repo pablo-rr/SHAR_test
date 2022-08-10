@@ -1,0 +1,82 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://art/textures/speedometer.png" type="Texture" id=1]
+[ext_resource path="res://art/textures/speedometerMarker.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+#export var vehicle_path : NodePath
+
+export var velocityAdjustment : float = 2.4
+
+onready var vehicle_path : NodePath = @\"../../playerCar/car\"
+onready var vehicle : VehicleBody = get_node(vehicle_path).get_node(\"vehicle\")
+onready var velocity : float = 0
+onready var min_angle : float = -133.8
+onready var max_angle : float = 131
+onready var total_angle_steps : float = abs(max_angle) + abs($speedometer2/marker.rect_rotation)
+onready var total_velocity_steps : float = 1 / vehicle.max_velocity
+
+func _ready() -> void:
+	print(velocity)
+	print(total_angle_steps)
+
+func _physics_process(delta : float) -> void:
+	var fixed_velocity : float
+	var fixed_rotation : float = (total_angle_steps * total_velocity_steps * velocity) + min_angle
+	velocity = vehicle.get_velocity()
+#	$speedometer2/marker.rect_rotation = max_angle - (total_angle_steps / velocity)
+	$speedometer2/marker.rect_rotation = lerp($speedometer2/marker.rect_rotation, fixed_rotation, 0.08)
+
+#	print(max_angle - (total_angle_steps / velocity))
+#	if(velocity > vehicle.max_velocity):
+#		fixed_velocity = round(vehicle.max_velocity*velocityAdjustment)
+#	else:
+#		fixed_velocity = round(velocity*velocityAdjustment)
+	$speed.text = str(fixed_velocity)
+	$speedometer2/marker.rect_rotation = lerp($speedometer2/marker.rect_rotation, -133.1 + fixed_velocity*3, 0.1)
+"
+
+[node name="carUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = SubResource( 1 )
+velocityAdjustment = 4.0
+
+[node name="speed" type="Label" parent="."]
+margin_left = 33.3354
+margin_top = 512.73
+margin_right = 73.3354
+margin_bottom = 526.73
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="speedometer2" type="Control" parent="."]
+margin_left = 33.3354
+margin_top = 512.73
+margin_right = 470.335
+margin_bottom = 917.73
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="back" type="TextureRect" parent="speedometer2"]
+margin_right = 440.0
+margin_bottom = 440.0
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="marker" type="TextureRect" parent="speedometer2"]
+margin_right = 440.0
+margin_bottom = 440.0
+rect_rotation = -133.074
+rect_pivot_offset = Vector2( 99.4258, 101.316 )
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

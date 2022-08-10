@@ -1,0 +1,4 @@
+Model: low poly human body
+Artist: chilloquake
+Link: https://sketchfab.com/3d-models/low-poly-human-29543206e35c430b9e90226b3a823e12
+License: CC4.0

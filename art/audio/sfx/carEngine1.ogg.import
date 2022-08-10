@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/carEngine1.ogg-906bda880607e052cb8f90e57ed5ba39.oggstr"
+
+[deps]
+
+source_file="res://art/audio/sfx/carEngine1.ogg"
+dest_files=[ "res://.import/carEngine1.ogg-906bda880607e052cb8f90e57ed5ba39.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

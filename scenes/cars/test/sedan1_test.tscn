@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/cars/templateCar.tscn" type="PackedScene" id=1]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 1.00442, 0.822051, 2.18523 )
+
+[node name="sedan1" instance=ExtResource( 1 )]
+mass = 40.0
+gravity_scale = 1.0
+maxVelocity = 40.0
+engineForce = 250.0
+brakeForce = 1.0
+maxSteeringAngle = 0.75
+driftForce = 3.0
+
+[node name="wheel1" parent="." index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.456921, 1.4 )
+use_as_traction = false
+wheel_roll_influence = 0.0
+suspension_travel = 5.0
+suspension_stiffness = 50.0
+suspension_max_force = 6000.0
+damping_compression = 1.9
+damping_relaxation = 2.0
+
+[node name="wheel2" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.456921, 1.4 )
+use_as_traction = false
+wheel_roll_influence = 0.0
+suspension_travel = 5.0
+suspension_stiffness = 50.0
+suspension_max_force = 6000.0
+damping_compression = 1.9
+damping_relaxation = 2.0
+
+[node name="wheel3" parent="." index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.456921, -1.4 )
+wheel_roll_influence = 0.0
+suspension_travel = 5.0
+suspension_stiffness = 50.0
+suspension_max_force = 6000.0
+damping_compression = 1.9
+damping_relaxation = 2.0
+
+[node name="wheel4" parent="." index="4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.456921, -1.4 )
+wheel_roll_influence = 0.0
+suspension_travel = 5.0
+suspension_stiffness = 50.0
+suspension_max_force = 6000.0
+damping_compression = 1.9
+damping_relaxation = 2.0
+
+[node name="collision" parent="." index="5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07101, 0 )
+shape = SubResource( 1 )
+
+[node name="bodyMesh" parent="." index="6"]
+visible = false

@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends VBoxContainer
+
+export var nodePath : NodePath
+export var properties : PoolStringArray = []
+
+onready var node : Node = null
+
+func _ready() -> void:
+	node = get_node(nodePath)
+	for property in properties:
+		var label = Label.new()
+		label.name = property
+		label.text = \"\"
+		add_child(label)
+		
+func _process(delta: float) -> void:
+	for property in properties:
+		get_node(property).text = str(property, \": \", node.get(property))
+"
+
+[node name="debugUI" type="VBoxContainer"]
+margin_right = 220.0
+margin_bottom = 220.0
+rect_scale = Vector2( 3, 3 )
+script = SubResource( 1 )
+properties = PoolStringArray( "", "", "", "", "" )

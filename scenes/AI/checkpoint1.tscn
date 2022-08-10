@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Area
+
+export(Array, int) var turnAngles
+
+func getRandomAngle() -> int:
+	randomize()
+	var angle : int = rand_range(0, turnAngles.size())
+	return turnAngles[angle]
+
+func _on_checkpoint1_body_entered(body):
+	if(\"AI\" in body.name):
+		var originalRotation = body.rotation_degrees
+		var newAngle = getRandomAngle()
+		print(originalRotation.y+newAngle)
+		
+		if(newAngle >= 0):
+			while body.rotation_degrees.y < newAngle:
+				body.turnLeft()
+				yield(get_tree().create_timer(0.01), \"timeout\")
+		else:
+			while body.rotation_degrees.y > newAngle:
+				body.turnRight()
+				yield(get_tree().create_timer(0.01), \"timeout\")
+		
+"
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 8.11109, 63.4072, 8.30169 )
+
+[sub_resource type="CubeMesh" id=3]
+
+[node name="checkpoint1" type="Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.188468, 0, 0.159537 )
+script = SubResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 2 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 7.88696, 0, 0, 0, 1, 0, 0, 0, 8.21807, 0, 0, 0 )
+mesh = SubResource( 3 )
+material/0 = null
+[connection signal="body_entered" from="." to="." method="_on_checkpoint1_body_entered"]

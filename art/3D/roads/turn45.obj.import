@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/turn45.obj-59f73818723d1126a36248b2f9f25269.mesh"
+
+[deps]
+
+files=[ "res://.import/turn45.obj-59f73818723d1126a36248b2f9f25269.mesh" ]
+
+source_file="res://art/3D/roads/turn45.obj"
+dest_files=[ "res://.import/turn45.obj-59f73818723d1126a36248b2f9f25269.mesh", "res://.import/turn45.obj-59f73818723d1126a36248b2f9f25269.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

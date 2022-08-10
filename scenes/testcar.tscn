@@ -5,7 +5,7 @@
 [ext_resource path="res://art/textures/wheel1.png" type="Texture" id=3]
 [ext_resource path="res://art/textures/light.png" type="Texture" id=4]
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=1]
 script/source = "extends VehicleBody
 
 export var maxVelocity : float = 20.0
@@ -22,6 +22,7 @@ const STEERING_NONE : int = 1000
 const STEERING_LEFT : int = 1001
 const STEERING_RIGHT : int = 1002
 
+var playerControl : bool
 var steer : float
 var speed : float
 var resetMaxSteeringAngle : float
@@ -37,6 +38,7 @@ var lastPosition : int
 var trailEffect : PackedScene
 
 func _ready():
+	playerControl = false
 	direction = DIRECTION_NONE
 	steer = 0
 	speed = engineForce * acceleration
@@ -55,13 +57,11 @@ func _physics_process(delta : float) -> void:
 	fixSpeedCapOverlap()
 	fixCarRotationDegrees()
 
-	
 func allInputs() -> void:
 	controlInputs()
 	stopCar()
 	
 func controlInputs() -> void:
-#	reset values to 0 each frame as they will be updated again
 	resetValues()
 	
 #	forward and backward inputs
@@ -209,23 +209,23 @@ func setBackLightsColor(newColor : Color) -> void:
 		light.light_color = newColor
 "
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=2]
 albedo_texture = ExtResource( 3 )
 
 [sub_resource type="BoxShape" id=3]
 extents = Vector3( 0.967396, 0.748731, 2.15591 )
 
-[sub_resource type="SpatialMaterial" id=6]
+[sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 0.866667, 1, 0.992157, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=7]
+[sub_resource type="SpatialMaterial" id=5]
 albedo_color = Color( 1, 0, 0, 1 )
 
 [node name="car" type="VehicleBody"]
 mass = 30.0
 angular_damp = 0.0
-script = SubResource( 2 )
+script = SubResource( 1 )
 maxVelocity = 50.0
 engineForce = 50.0
 acceleration = 5.0
@@ -242,7 +242,7 @@ suspension_stiffness = 29.4
 [node name="MeshInstance" type="MeshInstance" parent="wheel1"]
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 1 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 2 )
 material/1 = null
 
 [node name="wheel2" type="VehicleWheel" parent="."]
@@ -255,7 +255,7 @@ suspension_stiffness = 29.4
 [node name="MeshInstance4" type="MeshInstance" parent="wheel2"]
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 1 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 2 )
 material/1 = null
 
 [node name="wheel3" type="VehicleWheel" parent="."]
@@ -267,7 +267,7 @@ suspension_stiffness = 29.4
 [node name="MeshInstance3" type="MeshInstance" parent="wheel3"]
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 1 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 2 )
 material/1 = null
 
 [node name="wheel4" type="VehicleWheel" parent="."]
@@ -279,7 +279,7 @@ suspension_stiffness = 29.4
 [node name="MeshInstance2" type="MeshInstance" parent="wheel4"]
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 1 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 2 )
 material/1 = null
 
 [node name="collision" type="CollisionShape" parent="."]
@@ -289,8 +289,8 @@ shape = SubResource( 3 )
 [node name="bodyMesh" type="MeshInstance" parent="."]
 transform = Transform( 2.50343e-07, 0, -1, 0, 1, 0, 1, 0, 2.50343e-07, 0, 0.969475, 0 )
 mesh = ExtResource( 2 )
-material/0 = SubResource( 6 )
-material/1 = SubResource( 7 )
+material/0 = SubResource( 4 )
+material/1 = SubResource( 5 )
 
 [node name="camPos" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45624, -5.90873 )

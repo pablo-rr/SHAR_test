@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://art/materials/road.material" type="Material" id=1]
+
+[sub_resource type="Curve3D" id=6]
+_data = {
+"points": PoolVector3Array(  ),
+"tilts": PoolRealArray(  )
+}
+
+[node name="road1" type="Path"]
+curve = SubResource( 6 )
+
+[node name="CSGPolygon" type="CSGPolygon" parent="."]
+use_collision = true
+invert_faces = true
+polygon = PoolVector2Array( -3.5, 0, -3.5, 0.1, 3.5, 0.1, 1, 0 )
+mode = 2
+path_node = NodePath("..")
+path_interval = 1.0
+path_rotation = 2
+path_local = false
+path_continuous_u = false
+path_joined = true
+material = ExtResource( 1 )

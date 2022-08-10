@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/roadTile_274.obj-2e6c0fa478a1ed6d9a3d1d37332339fb.mesh"
+
+[deps]
+
+files=[ "res://.import/roadTile_274.obj-2e6c0fa478a1ed6d9a3d1d37332339fb.mesh" ]
+
+source_file="res://art/grids/roads/roadTile_274.obj"
+dest_files=[ "res://.import/roadTile_274.obj-2e6c0fa478a1ed6d9a3d1d37332339fb.mesh", "res://.import/roadTile_274.obj-2e6c0fa478a1ed6d9a3d1d37332339fb.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

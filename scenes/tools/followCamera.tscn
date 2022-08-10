@@ -1,31 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
-[sub_resource type="GDScript" id=1]
-script/source = "extends Camera
-
-#export var nodeFollowingPath : NodePath
-export var nodeLookingAtPath : NodePath
-export var followSpeed : float = 0.3
-export var followOffset : Vector3
-
-var nodeFollowing : Node
-var nodeLookingAt : Node
-
-func _ready() -> void:
-	setupNodes()
-	
-func _physics_process(delta : float) -> void:
-	look_at(nodeLookingAt.translation, Vector3(0, 1, 0))
-	transform.origin = lerp(global_transform.origin, nodeFollowing.global_transform.origin, followSpeed)
-
-func setupNodes() -> void:
-	nodeLookingAt = get_node(nodeLookingAtPath)
-	if(nodeLookingAt.get_node(\"camPos\")):
-		nodeFollowing = nodeLookingAt.get_node(\"camPos\")
-	else:
-		nodeFollowing = nodeLookingAt
-"
+[ext_resource path="res://scenes/tools/followCamera.tres.gd" type="Script" id=1]
 
 [node name="followCamera" type="Camera"]
-script = SubResource( 1 )
+script = ExtResource( 1 )
 followSpeed = 0.1

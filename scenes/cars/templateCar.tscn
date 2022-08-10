@@ -1,306 +1,271 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://art/textures/wheel1.png" type="Texture" id=1]
 [ext_resource path="res://art/textures/light.png" type="Texture" id=2]
-[ext_resource path="res://art/3D/cars/myOwn/sedan1.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://scripts/cars/driftEffectRaycast.gd" type="Script" id=3]
 [ext_resource path="res://art/3D/wheels/wheel1.obj" type="ArrayMesh" id=4]
+[ext_resource path="res://art/audio/sfx/carEngine2.ogg" type="AudioStream" id=5]
+[ext_resource path="res://art/audio/sfx/skid.ogg" type="AudioStream" id=6]
+[ext_resource path="res://scenes/effects/smoke.tscn" type="PackedScene" id=7]
+[ext_resource path="res://art/materials/fireParticles.material" type="Material" id=8]
+[ext_resource path="res://art/audio/sfx/carCrash.wav" type="AudioStream" id=9]
+[ext_resource path="res://scripts/cars/carBehaviour.gd" type="Script" id=10]
 
-[sub_resource type="GDScript" id=2]
-script/source = "extends VehicleBody
-
-export var maxVelocity : float = 20.0
-export var engineForce : float = 10.0
-export var brakeForce : float = 0.75
-export var maxSteeringAngle : float = 0.85
-export var driftForce : float = 0.0
-
-const DIRECTION_NONE : int = 100
-const DIRECTION_FORWARD : int = 101
-const DIRECTION_BACKWARDS : int = 102
-
-const STEERING_NONE : int = 1000
-const STEERING_LEFT : int = 1001
-const STEERING_RIGHT : int = 1002
-
-var steer : float
-var resetMaxSteeringAngle : float
-var accelerating : bool
-var wheels : Array = []
-var backLightsSprites : Array = []
-var backLights : Array = []
-var wheelFriction : float
-var direction : int
-var lastVelocity : float
-var steeringDirection : int
-var lastPosition : int
-var trailEffect : PackedScene
-
-func _ready():
-	direction = DIRECTION_NONE
-	steer = 0
-	accelerating = false
-	resetMaxSteeringAngle = maxSteeringAngle
-	wheels = [$wheel1, $wheel2, $wheel3, $wheel4]
-	backLights = [$backLight1, $backLight2]
-	backLightsSprites = [$backLightSprite1, $backLightSprite2]
-	wheelFriction = wheels[0].wheel_friction_slip
-	steeringDirection = STEERING_NONE
-	lastPosition = 0
-	trailEffect = preload(\"res://scenes/effects/driftTrail.tscn\")
-
-func _physics_process(delta : float) -> void:
-	allInputs()
-	fixSpeedCapOverlap()
-	fixCarRotationDegrees()
-	
-func allInputs() -> void:
-	controlInputs()
-	stopCar()
-	
-func controlInputs() -> void:
-#	reset values to 0 each frame as they will be updated again
-	resetValues()
-	
-#	forward and backward inputs
-	if(Input.is_action_pressed(\"W\")):
-		accelerate()
-		direction = DIRECTION_FORWARD
-	elif(Input.is_action_pressed(\"S\")):
-		setBackLightsColor(Color(1, 0, 0))
-		setBackLightsSpriteColor(Color(1, 0, 0, 1))
-		maxSteeringAngle *= 1.1
-		deccelerate()
-		setBackLightsColor(Color(1, 1, 1))
-		setBackLightsSpriteColor(Color(1, 1, 1, 1))
-		direction = DIRECTION_BACKWARDS
-	
-	if(Input.is_action_pressed(\"W\")):
-		accelerating = false
-			
-	if(Input.is_action_pressed(\"ui_accept\")):
-		drift()
-
-#	direction inputs
-#	using lerp to make the steering smooth
-	if(Input.is_action_pressed(\"D\")):
-		steering = lerp(steering, -maxSteeringAngle, 0.05)
-		steeringDirection = STEERING_RIGHT
-	elif(Input.is_action_pressed(\"A\")):
-		steering = lerp(steering, maxSteeringAngle, 0.05)
-		steeringDirection = STEERING_LEFT
-		
-func resetValues() -> void:
-	maxSteeringAngle = resetMaxSteeringAngle
-	accelerating = false
-	engine_force = 0
-	brake = 0
-	setWheelsFrictionLerp(10.5, 0.01)
-	setBackLightsColor(Color(0, 0, 0))
-	setBackLightsSpriteColor(Color(0.5, 0.1, 0.1, 1))
-	steering = lerp(steering, 0, 0.1)
-	direction = DIRECTION_NONE
-	steeringDirection = STEERING_NONE
-#	angular_velocity.x = 0
-#	angular_velocity.z = 0
-
-func drift() -> void:
-	if(getVelocity() > maxVelocity/2):
-		setFrontWheelsFrictionLerp(5-driftForce, 0.15)
-		setBackWheelsFrictionLerp(2-driftForce, 0.075)
-		instanceDriftTrails()
-
-func instanceDriftTrail(wheel : VehicleWheel) -> void:
-	if(wheel.is_in_contact()):
-		var trailLeft : Sprite3D = trailEffect.instance()
-		trailLeft.transform.origin = wheel.global_transform.origin
-		trailLeft.transform.origin.y += wheel.scale.y/2 + 0.1
-		trailLeft.rotation_degrees.y = rotation_degrees.y
-		get_parent().add_child(trailLeft)
-		
-func instanceDriftTrails() -> void:
-	instanceDriftTrail($wheel3)
-	instanceDriftTrail($wheel4)
-	
-func stopCar() -> void:
-	if(direction == DIRECTION_NONE and getVelocity() > 0):
-		brake = brakeForce
-		
-func fixSpeedCapOverlap() -> void:
-	if(getVelocity() > maxVelocity+0.5 and steeringDirection == STEERING_NONE):
-		engine_force = -10
-
-func getVelocity() -> float:
-	var velocity : float = abs(linear_velocity.x) + abs(linear_velocity.z)
-	var velReturn : float = velocity
-	return velReturn
-
-func accelerate() -> void:
-	if(getVelocity() < maxVelocity):
-		engine_force = engineForce
-		
-func deccelerate() -> void:
-	if(getVelocity() < maxVelocity):
-		print(\"dec\", int(rand_range(0, 100)))
-		engine_force = -engineForce
-		
-func fixCarRotationDegrees() -> void:
-	var rotFix : int = 2
-	if(rotation_degrees.x >= rotFix and !isOnFloor()):
-		angular_velocity.x = 0
-	elif(rotation_degrees.x <= -rotFix and !isOnFloor()):
-		angular_velocity.x = -0
-
-	if(rotation_degrees.z >= rotFix and !isOnFloor()):
-		angular_velocity.z = 0
-	elif(rotation_degrees.z <= -rotFix and !isOnFloor()):
-		angular_velocity.z = -0
-		
-func isOnFloor() -> bool:
-	var toReturn : bool = false
-	if(wheels[0].is_in_contact()
-	or wheels[1].is_in_contact()
-	or wheels[2].is_in_contact()
-	or wheels[3].is_in_contact()):
-		toReturn = true
-		
-	return toReturn
-
-func setWheelsFrictionLerp(newFriction : float, step : float) -> void:
-	for wheel in wheels:
-		wheel.wheel_friction_slip = lerp(wheel.wheel_friction_slip, newFriction, step)
-
-func setFrontWheelsFrictionLerp(newFriction : float, step : float) -> void:
-#	for wheel in wheels:
-#		wheel.wheel_friction_slip = lerp(wheel.wheel_friction_slip, newFriction, step)
-	wheels[0].wheel_friction_slip = lerp(wheels[2].wheel_friction_slip, newFriction, step)
-	wheels[1].wheel_friction_slip = lerp(wheels[3].wheel_friction_slip, newFriction, step)
-	
-func setBackWheelsFrictionLerp(newFriction : float, step : float) -> void:
-#	for wheel in wheels:
-#		wheel.wheel_friction_slip = lerp(wheel.wheel_friction_slip, newFriction, step)
-	wheels[2].wheel_friction_slip = lerp(wheels[2].wheel_friction_slip, newFriction, step)
-	wheels[3].wheel_friction_slip = lerp(wheels[3].wheel_friction_slip, newFriction, step)
-		
-func setFrontWheelsFriction(newFriction : float) -> void:
-#	for wheel in wheels:
-#		wheel.wheel_friction_slip = newFriction
-	wheels[0].wheel_friction_slip = newFriction
-	wheels[1].wheel_friction_slip = newFriction
-	
-func setBackWheelsFriction(newFriction : float) -> void:
-#	for wheel in wheels:
-#		wheel.wheel_friction_slip = newFriction
-	wheels[2].wheel_friction_slip = newFriction
-	wheels[3].wheel_friction_slip = newFriction
-		
-func setBackLightsSpriteColor(newColor : Color) -> void:
-	for light in backLightsSprites:
-		light.modulate = newColor
-		
-func setBackLightsColor(newColor : Color) -> void:
-	for light in backLights:
-		light.light_color = newColor
-"
-
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 1 )
 
-[sub_resource type="BoxShape" id=3]
-extents = Vector3( 1.1761, 0.542416, 2.01241 )
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 1.05613, 0.808912, 2.77229 )
 
-[sub_resource type="SpatialMaterial" id=6]
-albedo_color = Color( 0.866667, 1, 0.992157, 1 )
-roughness = 0.0
+[sub_resource type="ParticlesMaterial" id=5]
+direction = Vector3( 0, 0, 0 )
+spread = 18.5
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 3.0
+scale = 0.2
 
-[sub_resource type="SpatialMaterial" id=7]
-albedo_color = Color( 1, 0, 0, 1 )
+[sub_resource type="SphereMesh" id=6]
 
-[node name="car" type="VehicleBody"]
-mass = 30.0
+[sub_resource type="Gradient" id=7]
+offsets = PoolRealArray( 0.356742, 1 )
+colors = PoolColorArray( 1, 0.65332, 0, 1, 1, 0, 0, 1 )
+
+[sub_resource type="GradientTexture" id=8]
+gradient = SubResource( 7 )
+
+[sub_resource type="Curve" id=9]
+_data = [ Vector2( 0.271768, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.588636 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=10]
+curve = SubResource( 9 )
+
+[sub_resource type="ParticlesMaterial" id=11]
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3( 0, 0, 0 )
+gravity = Vector3( 0, 3, 0 )
+radial_accel = 1.0
+radial_accel_random = 1.0
+tangential_accel = 2.0
+tangential_accel_random = 1.0
+angle = 180.0
+angle_random = 1.0
+scale_curve = SubResource( 10 )
+color_ramp = SubResource( 8 )
+
+[sub_resource type="SphereMesh" id=12]
+material = ExtResource( 8 )
+radius = 0.5
+height = 1.0
+radial_segments = 16
+rings = 8
+
+[sub_resource type="BoxShape" id=13]
+extents = Vector3( 0.0905082, 0.240275, 0.277489 )
+
+[node name="car" type="Spatial"]
+
+[node name="vehicle" type="VehicleBody" parent="."]
+gravity_scale = 1.53
 angular_damp = 0.0
-script = SubResource( 2 )
-maxVelocity = 50.0
-engineForce = 50.0
-brakeForce = 0.25
-maxSteeringAngle = 0.75
+script = ExtResource( 10 )
 
-[node name="wheel1" type="VehicleWheel" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, 1.4 )
+[node name="body" type="Spatial" parent="vehicle"]
+
+[node name="wheelFrontLeft" type="VehicleWheel" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, -1.74846e-07, 0, 1.74846e-07, 1, 0.998169, 0.216448, 1.40779 )
 use_as_traction = true
 use_as_steering = true
 suspension_travel = 50.0
-suspension_stiffness = 29.4
+suspension_stiffness = 30.0
+damping_compression = 1.4
+damping_relaxation = 1.5
 
-[node name="MeshInstance" type="MeshInstance" parent="wheel1"]
+[node name="MeshInstance" type="MeshInstance" parent="vehicle/wheelFrontLeft"]
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 1 )
 material/1 = null
 
-[node name="wheel2" type="VehicleWheel" parent="."]
+[node name="wheelFrontRight" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, 1.4 )
 use_as_traction = true
 use_as_steering = true
 suspension_travel = 50.0
-suspension_stiffness = 29.4
+suspension_stiffness = 30.0
+damping_compression = 1.4
+damping_relaxation = 1.5
 
-[node name="MeshInstance4" type="MeshInstance" parent="wheel2"]
+[node name="MeshInstance4" type="MeshInstance" parent="vehicle/wheelFrontRight"]
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 1 )
 material/1 = null
 
-[node name="wheel3" type="VehicleWheel" parent="."]
+[node name="wheelBackLeft" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, -1.4 )
 use_as_traction = true
 suspension_travel = 50.0
-suspension_stiffness = 29.4
+suspension_stiffness = 30.0
+damping_compression = 1.4
+damping_relaxation = 1.5
 
-[node name="MeshInstance3" type="MeshInstance" parent="wheel3"]
+[node name="MeshInstance3" type="MeshInstance" parent="vehicle/wheelBackLeft"]
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 1 )
 material/1 = null
 
-[node name="wheel4" type="VehicleWheel" parent="."]
+[node name="wheelBackRight" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, -1.4 )
 use_as_traction = true
 suspension_travel = 50.0
-suspension_stiffness = 29.4
+suspension_stiffness = 30.0
+damping_compression = 1.4
+damping_relaxation = 1.5
 
-[node name="MeshInstance2" type="MeshInstance" parent="wheel4"]
+[node name="MeshInstance2" type="MeshInstance" parent="vehicle/wheelBackRight"]
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 4 )
-material/0 = SubResource( 5 )
+material/0 = SubResource( 1 )
 material/1 = null
 
-[node name="collision" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.908503, 0 )
-shape = SubResource( 3 )
+[node name="driftEffectRaycasts" type="Spatial" parent="vehicle"]
 
-[node name="bodyMesh" type="MeshInstance" parent="."]
-transform = Transform( 2.50343e-07, 0, -1, 0, 1, 0, 1, 0, 2.50343e-07, 0, 0.969475, 0 )
-mesh = ExtResource( 3 )
-material/0 = SubResource( 6 )
-material/1 = SubResource( 7 )
+[node name="RayCast1" type="RayCast" parent="vehicle/driftEffectRaycasts"]
+transform = Transform( 1, 0, 0, 0, 1, 2.98023e-08, 0, -2.98023e-08, 1, 0, 0, 0 )
+enabled = true
+script = ExtResource( 3 )
 
-[node name="camPos" type="Position3D" parent="."]
+[node name="RayCast2" type="RayCast" parent="vehicle/driftEffectRaycasts"]
+enabled = true
+script = ExtResource( 3 )
+
+[node name="RayCast3" type="RayCast" parent="vehicle/driftEffectRaycasts"]
+enabled = true
+script = ExtResource( 3 )
+
+[node name="RayCast4" type="RayCast" parent="vehicle/driftEffectRaycasts"]
+enabled = true
+script = ExtResource( 3 )
+
+[node name="collision" type="CollisionShape" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04659, 0 )
+shape = SubResource( 2 )
+
+[node name="camPos" type="Position3D" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45624, -5.90873 )
 
-[node name="backLightSprite1" type="Sprite3D" parent="."]
+[node name="backLightSprite1" type="Sprite3D" parent="vehicle"]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0.6, 0.72, -2.2 )
 texture = ExtResource( 2 )
 
-[node name="backLightSprite2" type="Sprite3D" parent="."]
+[node name="backLightSprite2" type="Sprite3D" parent="vehicle"]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.6, 0.72, -2.2 )
 texture = ExtResource( 2 )
 
-[node name="backLight1" type="OmniLight" parent="."]
+[node name="backLight1" type="OmniLight" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.712668, -2.5 )
 light_color = Color( 0, 0, 0, 1 )
 omni_range = 1.45512
 
-[node name="backLight2" type="OmniLight" parent="."]
+[node name="backLight2" type="OmniLight" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.712668, -2.5 )
 light_color = Color( 0, 0, 0, 1 )
 omni_range = 1.45512
+
+[node name="driftSmokeLeft" type="Particles" parent="vehicle"]
+transform = Transform( -1, 0, -8.74228e-08, -4.37114e-08, 0.866025, 0.5, 7.57103e-08, 0.5, -0.866025, 0.943781, -0.238734, -1.83095 )
+emitting = false
+amount = 40
+lifetime = 0.3
+process_material = SubResource( 5 )
+draw_pass_1 = SubResource( 6 )
+
+[node name="driftSmokeRight" type="Particles" parent="vehicle"]
+transform = Transform( -1, 0, -8.74228e-08, -4.37114e-08, 0.866025, 0.5, 7.57103e-08, 0.5, -0.866025, -0.961504, -0.238734, -1.83095 )
+emitting = false
+amount = 40
+lifetime = 0.3
+process_material = SubResource( 5 )
+draw_pass_1 = SubResource( 6 )
+
+[node name="fire" type="Particles" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.938687, 1.66054 )
+cast_shadow = 0
+emitting = false
+amount = 50
+process_material = SubResource( 11 )
+draw_pass_1 = SubResource( 12 )
+
+[node name="smoke" parent="vehicle" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.938687, 1.66054 )
+emitting = false
+amount = 100
+lifetime = 0.5
+speed_scale = 3.0
+local_coords = false
+
+[node name="drift" type="AudioStreamPlayer3D" parent="vehicle"]
+stream = ExtResource( 6 )
+autoplay = true
+
+[node name="engine" type="AudioStreamPlayer3D" parent="vehicle"]
+stream = ExtResource( 5 )
+autoplay = true
+
+[node name="crash" type="AudioStreamPlayer3D" parent="vehicle"]
+stream = ExtResource( 9 )
+unit_db = 10.0
+
+[node name="AI" type="Spatial" parent="vehicle"]
+
+[node name="checkpoint" type="RayCast" parent="vehicle/AI"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688144, 2.5947 )
+cast_to = Vector3( 0, 0, 0 )
+
+[node name="front" type="RayCast" parent="vehicle/AI"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688144, 2.5947 )
+cast_to = Vector3( 0, 0, 8 )
+
+[node name="left" type="RayCast" parent="vehicle/AI"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688144, 2.5947 )
+cast_to = Vector3( 3, 0, 8 )
+
+[node name="right" type="RayCast" parent="vehicle/AI"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688144, 2.5947 )
+cast_to = Vector3( -3, 0, 8 )
+
+[node name="joints" type="Spatial" parent="."]
+
+[node name="frontLeftDoor" type="RigidBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="frontLeftDoor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.604755, 0 )
+visible = false
+shape = SubResource( 13 )
+disabled = true
+
+[node name="frontRightDoor" type="RigidBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="frontRightDoor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.604755, 0 )
+visible = false
+shape = SubResource( 13 )
+disabled = true
+
+[node name="backLeftDoor" type="RigidBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="backLeftDoor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.604755, 0 )
+visible = false
+shape = SubResource( 13 )
+disabled = true
+
+[node name="backRightDoor" type="RigidBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="backRightDoor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.604755, 0 )
+visible = false
+shape = SubResource( 13 )
+disabled = true

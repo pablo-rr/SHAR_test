@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/brakes.ogg-f9dce0ccc1ef1a7c8eb14b178d136ad2.oggstr"
+
+[deps]
+
+source_file="res://art/audio/sfx/brakes.ogg"
+dest_files=[ "res://.import/brakes.ogg-f9dce0ccc1ef1a7c8eb14b178d136ad2.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

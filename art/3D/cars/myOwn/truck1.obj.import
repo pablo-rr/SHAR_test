@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/truck1.obj-78a4c6d5c2c43f3b2914e516a0804eab.mesh"
+
+[deps]
+
+files=[ "res://.import/truck1.obj-78a4c6d5c2c43f3b2914e516a0804eab.mesh" ]
+
+source_file="res://art/3D/cars/myOwn/truck1.obj"
+dest_files=[ "res://.import/truck1.obj-78a4c6d5c2c43f3b2914e516a0804eab.mesh", "res://.import/truck1.obj-78a4c6d5c2c43f3b2914e516a0804eab.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

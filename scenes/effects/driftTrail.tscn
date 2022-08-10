@@ -11,6 +11,6 @@ func _ready():
 "
 
 [node name="driftTrail" type="Sprite3D"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 0.578859, -2.53027e-08, 0, 0, 0 )
+transform = Transform( 0.44241, 0, 0, 0, -4.37114e-08, -1, 0, 0.536509, -2.34515e-08, 0, 0, 0 )
 texture = ExtResource( 1 )
 script = SubResource( 1 )

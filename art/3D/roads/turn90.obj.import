@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/turn90.obj-d67f091ebafd767c812ca7ca3c2d27aa.mesh"
+
+[deps]
+
+files=[ "res://.import/turn90.obj-d67f091ebafd767c812ca7ca3c2d27aa.mesh" ]
+
+source_file="res://art/3D/roads/turn90.obj"
+dest_files=[ "res://.import/turn90.obj-d67f091ebafd767c812ca7ca3c2d27aa.mesh", "res://.import/turn90.obj-d67f091ebafd767c812ca7ca3c2d27aa.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

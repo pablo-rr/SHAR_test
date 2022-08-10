@@ -1,5 +1,32 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scenes/cars/templateCar.tscn" type="PackedScene" id=1]
 
-[node name="car" instance=ExtResource( 1 )]
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 1.00442, 0.822051, 2.18523 )
+
+[node name="sedan1" instance=ExtResource( 1 )]
+mass = 500.0
+gravity_scale = 1.0
+engineForce = 100.0
+driftForce = 5.0
+
+[node name="wheel1" parent="." index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.30837, 1.4 )
+wheel_roll_influence = 0.0
+
+[node name="wheel2" parent="." index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.30837, 1.4 )
+wheel_roll_influence = 0.0
+
+[node name="wheel3" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.30837, -1.4 )
+wheel_roll_influence = 0.0
+
+[node name="wheel4" parent="." index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.30837, -1.4 )
+wheel_roll_influence = 0.0
+
+[node name="collision" parent="." index="4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07101, 0 )
+shape = SubResource( 1 )
