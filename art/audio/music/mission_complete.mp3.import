@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/mission_complete.mp3-3291a4f0477c241f2e4ea6433e4df2a7.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/mission_complete.mp3"
+dest_files=[ "res://.import/mission_complete.mp3-3291a4f0477c241f2e4ea6433e4df2a7.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

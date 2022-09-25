@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Flowers By Irene.mp3-e4a7fe8905fbee9f03c3415c5bb6dc6c.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Flowers By Irene.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Flowers By Irene.mp3-e4a7fe8905fbee9f03c3415c5bb6dc6c.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

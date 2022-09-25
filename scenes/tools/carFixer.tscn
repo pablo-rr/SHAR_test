@@ -16,12 +16,12 @@ func _physics_process(delta : float) -> void:
 	rotation_degrees.y += 2
 
 func _on_Area_body_entered(body : PhysicsBody):
-	if(enabled and body and body.name == \"car\"):
+	if(enabled and body and body.name == \"vehicle\"):
 		enabled = false
 		$MeshInstance.visible = false
 		$repair.play(1.0)
 		$Particles.emitting = true
-		body.setHealth(1000)
+		body.set_health(1000)
 		yield(get_tree().create_timer(15.0), \"timeout\")
 		enabled = true
 		$MeshInstance.visible = true
@@ -38,8 +38,9 @@ scale = 0.1
 [sub_resource type="SphereMesh" id=3]
 material = ExtResource( 1 )
 
-[sub_resource type="BoxShape" id=4]
-extents = Vector3( 0.665827, 0.687039, 0.22511 )
+[sub_resource type="CylinderShape" id=4]
+radius = 1.67077
+height = 3.32971
 
 [node name="carFixer" type="StaticBody"]
 script = SubResource( 1 )
@@ -58,7 +59,7 @@ draw_pass_1 = SubResource( 3 )
 shape = SubResource( 4 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
-transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0 )
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 mesh = ExtResource( 2 )
 material/0 = ExtResource( 1 )
 material/1 = ExtResource( 1 )
@@ -67,5 +68,6 @@ material/2 = ExtResource( 1 )
 [node name="repair" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 3 )
 unit_db = 15.0
+
 [connection signal="area_entered" from="Area" to="." method="_on_Area_area_entered"]
 [connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]

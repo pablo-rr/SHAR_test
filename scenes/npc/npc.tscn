@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/player/amogus.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=19]
+script/source = "extends KinematicBody
+
+onready var ai_path : PathAI = null
+onready var current_path_point : Area = null
+onready var current_path_point_index : int = 0
+onready var speed : float = 3.4
+onready var gravity_speed : float = 0.0
+
+func _ready() -> void:
+	ai_path = get_parent().get_node(\"AIPaths/NpcPathAI\")
+	current_path_point = ai_path.path_points[0]
+	print(ai_path.path_points)
+
+func _physics_process(delta: float) -> void:
+	if(current_path_point != null):
+		var direction : Vector3 = -(global_transform.origin - current_path_point.global_transform.origin).normalized()
+		var direction2 : Vector2 = Vector2(direction.x, direction.z)
+		var gravity : float = 0.09
+		if(!is_on_floor()):
+			gravity_speed -= gravity
+		else:
+			gravity_speed = 0.0
+			
+		move_and_slide_with_snap(Vector3(direction2.x, gravity_speed, direction2.y) * speed, Vector3(0, -1, 0), Vector3(0, 1, 0), false)
+		
+"
+
+[sub_resource type="CylinderShape" id=18]
+height = 1.89347
+radius = 0.523102
+
+[node name="npc" type="KinematicBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.29974, 0 )
+collision_layer = 4
+collision_mask = 31
+script = SubResource( 19 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -1, -1.50996e-07, 0, 1.50996e-07, -1, 0, -0.183165, 8.00641e-09 )
+shape = SubResource( 18 )
+
+[node name="Mesh" parent="." instance=ExtResource( 1 )]

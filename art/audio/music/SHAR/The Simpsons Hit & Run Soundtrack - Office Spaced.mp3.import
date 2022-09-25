@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Office Spaced.mp3-710bf5bbf7095ac2852b3618e3ecce09.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Office Spaced.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Office Spaced.mp3-710bf5bbf7095ac2852b3618e3ecce09.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

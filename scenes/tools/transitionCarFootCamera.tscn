@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Camera
+
+var look_at_node : Spatial
+var initial_cam : Camera
+var final_cam : Camera
+
+signal camera_transitioned
+
+onready var tween_speed : float = 0.8
+
+func setup(look_at_node : Spatial, initial_cam : Camera, final_cam : Camera) -> void:
+	self.initial_cam = initial_cam
+	self.final_cam = final_cam
+	initial_cam.current = false
+	final_cam.current = false
+	current = true
+	self.look_at_node = look_at_node
+	global_transform.origin = initial_cam.global_transform.origin
+#	look_at(look_at_node.global_transform.origin, Vector3(0, 1, 0))
+#	yield(get_tree().create_timer(0.25), \"timeout\")
+	$Tween.interpolate_property(self, \"global_transform:origin\", initial_cam.global_transform.origin, final_cam.global_transform.origin, tween_speed, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	$Tween.interpolate_property(self, \"global_transform:basis\", initial_cam.global_transform.basis, final_cam.global_transform.basis, tween_speed, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	$Tween.start()
+	
+func _physics_process(delta: float) -> void:
+#	look_at(look_at_node.global_transform.origin, Vector3(0, 1, 0))
+	pass
+
+func _on_Tween_tween_all_completed() -> void:
+	emit_signal(\"camera_transitioned\")
+	current = false
+	final_cam.current = true
+	queue_free()
+"
+
+[node name="transitionCarFootCamera" type="Camera"]
+script = SubResource( 1 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]

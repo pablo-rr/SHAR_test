@@ -1,1 +1,1 @@
-extends "res://scripts/carBehaviour.gd"
+extends "res://scripts/cars/carBehaviour.gd"

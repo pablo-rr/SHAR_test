@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://art/textures/wheel1.png" type="Texture" id=1]
 [ext_resource path="res://art/textures/light.png" type="Texture" id=2]
@@ -10,6 +10,9 @@
 [ext_resource path="res://art/materials/fireParticles.material" type="Material" id=8]
 [ext_resource path="res://art/audio/sfx/carCrash.wav" type="AudioStream" id=9]
 [ext_resource path="res://scripts/cars/carBehaviour.gd" type="Script" id=10]
+
+[sub_resource type="BoxShape" id=14]
+extents = Vector3( 2.37026, 0.759428, 0.871071 )
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 1 )
@@ -66,11 +69,29 @@ extents = Vector3( 0.0905082, 0.240275, 0.277489 )
 [node name="car" type="Spatial"]
 
 [node name="vehicle" type="VehicleBody" parent="."]
+collision_layer = 2
+collision_mask = 58
 gravity_scale = 1.53
 angular_damp = 0.0
 script = ExtResource( 10 )
 
 [node name="body" type="Spatial" parent="vehicle"]
+
+[node name="seatLeft" type="Position3D" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.743488, 0 )
+
+[node name="PinJoint" type="PinJoint" parent="vehicle/seatLeft"]
+
+[node name="seatRight" type="Position3D" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.743488, 0 )
+
+[node name="PinJoint" type="PinJoint" parent="vehicle/seatRight"]
+
+[node name="getInCar" type="Area" parent="vehicle"]
+
+[node name="CollisionShape" type="CollisionShape" parent="vehicle/getInCar"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.743488, 0 )
+shape = SubResource( 14 )
 
 [node name="wheelFrontLeft" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, -1.74846e-07, 0, 1.74846e-07, 1, 0.998169, 0.216448, 1.40779 )
@@ -85,7 +106,6 @@ damping_relaxation = 1.5
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 4 )
 material/0 = SubResource( 1 )
-material/1 = null
 
 [node name="wheelFrontRight" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, 1.4 )
@@ -100,7 +120,6 @@ damping_relaxation = 1.5
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 4 )
 material/0 = SubResource( 1 )
-material/1 = null
 
 [node name="wheelBackLeft" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.216452, -1.4 )
@@ -114,7 +133,6 @@ damping_relaxation = 1.5
 transform = Transform( -2.18557e-08, 0.5, 0, -0.5, -2.18557e-08, 0, 0, 0, 0.5, 0.1, 0, 0 )
 mesh = ExtResource( 4 )
 material/0 = SubResource( 1 )
-material/1 = null
 
 [node name="wheelBackRight" type="VehicleWheel" parent="vehicle"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.216452, -1.4 )
@@ -128,7 +146,6 @@ damping_relaxation = 1.5
 transform = Transform( 8.14603e-08, -0.5, -1.62921e-07, -0.5, -8.14603e-08, 0, -2.65431e-14, 1.62921e-07, -0.5, -0.1, 0, 0 )
 mesh = ExtResource( 4 )
 material/0 = SubResource( 1 )
-material/1 = null
 
 [node name="driftEffectRaycasts" type="Spatial" parent="vehicle"]
 
@@ -178,7 +195,8 @@ omni_range = 1.45512
 transform = Transform( -1, 0, -8.74228e-08, -4.37114e-08, 0.866025, 0.5, 7.57103e-08, 0.5, -0.866025, 0.943781, -0.238734, -1.83095 )
 emitting = false
 amount = 40
-lifetime = 0.3
+lifetime = 0.6
+local_coords = false
 process_material = SubResource( 5 )
 draw_pass_1 = SubResource( 6 )
 
@@ -186,7 +204,8 @@ draw_pass_1 = SubResource( 6 )
 transform = Transform( -1, 0, -8.74228e-08, -4.37114e-08, 0.866025, 0.5, 7.57103e-08, 0.5, -0.866025, -0.961504, -0.238734, -1.83095 )
 emitting = false
 amount = 40
-lifetime = 0.3
+lifetime = 0.6
+local_coords = false
 process_material = SubResource( 5 )
 draw_pass_1 = SubResource( 6 )
 
@@ -236,6 +255,12 @@ cast_to = Vector3( 3, 0, 8 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688144, 2.5947 )
 cast_to = Vector3( -3, 0, 8 )
 
+[node name="hasFloorInFront" type="RayCast" parent="vehicle"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.03763, 4.51439 )
+enabled = true
+cast_to = Vector3( 0, -1.878, 0 )
+collision_mask = 16
+
 [node name="joints" type="Spatial" parent="."]
 
 [node name="frontLeftDoor" type="RigidBody" parent="."]
@@ -269,3 +294,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.604755, 0 )
 visible = false
 shape = SubResource( 13 )
 disabled = true
+
+[connection signal="body_entered" from="vehicle/getInCar" to="vehicle" method="_on_getInCar_body_entered"]
+[connection signal="body_exited" from="vehicle/getInCar" to="vehicle" method="_on_getInCar_body_exited"]

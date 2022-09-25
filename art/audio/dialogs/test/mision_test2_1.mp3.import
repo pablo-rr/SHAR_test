@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/mision_test2_1.mp3-c667f481c3bf155a922768a4cecce47d.mp3str"
+
+[deps]
+
+source_file="res://art/audio/dialogs/test/mision_test2_1.mp3"
+dest_files=[ "res://.import/mision_test2_1.mp3-c667f481c3bf155a922768a4cecce47d.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

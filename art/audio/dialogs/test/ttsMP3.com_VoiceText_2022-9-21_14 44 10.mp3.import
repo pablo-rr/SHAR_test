@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/ttsMP3.com_VoiceText_2022-9-21_14 44 10.mp3-868128d1469456d29fd18643f2008787.mp3str"
+
+[deps]
+
+source_file="res://art/audio/dialogs/test/ttsMP3.com_VoiceText_2022-9-21_14 44 10.mp3"
+dest_files=[ "res://.import/ttsMP3.com_VoiceText_2022-9-21_14 44 10.mp3-868128d1469456d29fd18643f2008787.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

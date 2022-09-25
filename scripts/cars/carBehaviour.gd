@@ -6,11 +6,11 @@ export var AI : bool = false
 ## Keep between 15 and 50 for good stability.
 export(float, 5.0, 100.0, 0.5) var max_velocity : float = 20.0
 ## Acceleration. Keep between 30 and 100 for good stability.
-export(float, 10.0, 15000.0, 0.5) var engine_power : float = 75.0
+export(float, 75.0, 15000.0, 0.5) var engine_power : float = 75.0
 ## Affects engine sound when accelerating. A higher pitch will make a stronger engine sound.
 export(float, 0.2, 2.0, 0.05) var engine_pitch : float = 0.5
 ## Affects engine sound when accelerating. A higher pitch will make a stronger engine sound.
-export(float, 0.15, 3.0, 0.05) var brake_force : float = 0.75
+export(float, 1.0, 6.0, 0.05) var brake_force : float = 0.75
 export(float, 0.15, 3.0, 0.05) var max_steering_angle : float = 0.85
 export(float, 0.5, 5.0, 0.05) var drift_force : float = 1.0
 export(float, 0.03, 0.2, 0.05) var drift_speed : float = 0.15
@@ -25,7 +25,7 @@ const STEERING_RIGHT : int = 1002
 
 #onready var driftTrail : Node = preload("res://MotionTrail/MotionTrail.tscn")
 
-onready var in_control : bool = true
+onready var in_control : bool = false
 onready var steer : float = 0
 onready var reset_max_steering_angle : float = max_steering_angle
 onready var accelerating : bool = false
@@ -45,22 +45,38 @@ onready var last_direction : int = DIRECTION_NONE
 onready var health : int = 1000
 onready var smoke_effect : PackedScene = preload("res://scenes/effects/smoke.tscn")
 onready var deccelerating : bool = false
+onready var transition_camera : PackedScene = preload("res://scenes/tools/transitionCarFootCamera.tscn")
 # used to detect if the car is moving backwards or breaking
 onready var initial_backwards_velocity : float = 0
+# Used to detect if player can enter car
+onready var player_near : bool = false
+onready var player : Node = null
+onready var current_path_point : Area = null
+onready var current_path_point_index : int = 0
+onready var ai_path : PathAI = null
+onready var last_origin : Vector3 = Vector3(1, 1, 1)
 
 func _ready():
 	setup_drift_effect_raycasts()
-	if(AI):
-		in_control = false
+	setup_drift_smoke_positions()
+	if(!AI):
+		in_control = true
+		collision_layer = CollisionEnums.COLLISION_NPC_CAR
+	else:
+		collision_layer = CollisionEnums.COLLISION_PLAYER_CAR
+		
 
 func _physics_process(delta : float) -> void:
 	reset_values()
 	all_inputs()
 	stop_car()
-	fix_speed_cap_overlap()
 	recover_from_flip()
 	damage_on_collision()
 	engine_sound(engine_pitch)
+	join_player_to_car()
+	
+	if(AI):
+		ai_follow_path()
 	
 # need a single to get the value and not update it every frame
 func _input(event : InputEvent):
@@ -76,6 +92,45 @@ func _input(event : InputEvent):
 		rotation_degrees.x = 0
 		rotation_degrees.z = 0
 		
+	get_in_car_inputs(event)
+	
+func set_ai_path(new_path : PathAI) -> void:
+	ai_path = new_path
+	current_path_point_index = 0
+	current_path_point = ai_path.path_points[0]
+
+func angle_difference(angle1, angle2):
+	var diff = angle2 - angle1
+	return diff if abs(diff) < 180 else diff + (360 * -sign(diff))
+
+func ai_follow_path() -> void:
+#	Engine.time_scale = 0.5
+	if(current_path_point != null):
+		
+		var player_2d_position : Vector2 = Vector2(global_transform.origin.x, global_transform.origin.z).normalized()
+		var path_2d_position : Vector2 = Vector2(current_path_point.global_transform.origin.x, current_path_point.global_transform.origin.z).normalized()
+		
+		var facing_direction : Vector2 = Vector2(global_transform.basis.z.x, global_transform.basis.z.z)
+		var walling_direction : Vector2 = Vector2(global_transform.basis.x.x, global_transform.basis.x.z)
+		var facing_angle : float = rotation_degrees.y
+		
+		if(facing_angle < 0):
+			facing_angle += 360
+		
+		var go_to_direction : Vector2 = Vector2(global_transform.origin.x - current_path_point.global_transform.origin.x, global_transform.origin.z - current_path_point.global_transform.origin.z).normalized()
+		var go_to_angle : float = rad2deg(path_2d_position.angle_to_point(player_2d_position))
+		
+		var dot : float = facing_direction.dot(go_to_direction)
+		var dot_w : float = walling_direction.dot(go_to_direction) # -0.7 = facing path
+		var cross : float = facing_direction.cross(go_to_direction)
+		
+		if(dot_w > 0.1):
+			turn_right()
+		elif(dot_w < -0.1):
+			turn_left()
+		
+		accelerate()
+		
 func setup_drift_effect_raycasts() -> void:
 	$driftEffectRaycasts/RayCast1.global_transform.origin = $wheelFrontLeft.global_transform.origin
 	$driftEffectRaycasts/RayCast2.global_transform.origin = $wheelFrontRight.global_transform.origin
@@ -86,26 +141,63 @@ func setup_drift_effect_raycasts() -> void:
 	$driftEffectRaycasts/RayCast2.set_associated_wheel($wheelFrontRight)
 	$driftEffectRaycasts/RayCast3.set_associated_wheel($wheelBackLeft)
 	$driftEffectRaycasts/RayCast4.set_associated_wheel($wheelBackRight)
+	
+func setup_drift_smoke_positions() -> void:
+	$driftSmokeLeft.transform.origin = $wheelBackLeft.transform.origin
+	$driftSmokeLeft.transform.origin.y -= $wheelBackLeft.wheel_radius/2
+	
+	$driftSmokeRight.transform.origin = $wheelBackRight.transform.origin
+	$driftSmokeRight.transform.origin.y -= $wheelBackRight.wheel_radius/2
 		
 func all_inputs() -> void:
 	control_inputs()
+	
+func align_character_and_car_cameras() -> void:
+	if(in_control):
+		player
+	
+func get_in_car_inputs(event : InputEvent) -> void:
+	if(player_near and event.is_action_pressed("ui_get_in_car") and !in_control and get_velocity() <= 0.3):
+		collision_layer = CollisionEnums.COLLISION_PLAYER_CAR
+		var cam = transition_camera.instance()
+		add_child(cam)
+		cam.setup(self, player.get_node("camPivotY/camPivotX/Camera"), get_parent().get_parent().get_parent().get_node("followCamera"))
+		cam.connect("camera_transitioned", self, "get_in_car")
+		player.enabled = false
+		player.get_node("CollisionShape").disabled = true
+		player.get_node("Mesh").rotation_degrees = $seatLeft.rotation_degrees
+#		in_control = true
+	elif(player != null and event.is_action_pressed("ui_get_in_car") and in_control and get_velocity() <= 0.3):
+		collision_layer = CollisionEnums.COLLISION_NPC_CAR
+		var cam = transition_camera.instance()
+		add_child(cam)
+		cam.setup(player, get_parent().get_parent().get_parent().get_node("followCamera"), player.get_node("camPivotY/camPivotX/Camera"))
+		in_control = false
+		player.transform.origin.x += 2
+		player.enabled = true
+		player.get_node("Mesh").rotation_degrees = Vector3(0, 0, 0)
+		player.get_node("CollisionShape").disabled = false
+		
+func get_in_car() -> void:
+	in_control = true
 	
 func control_inputs() -> void:
 	if(in_control):
 		#	direction inputs
 		#	using lerp to make the steering smooth
-		if(Input.is_action_pressed("D")):
-			turn_right()
-		elif(Input.is_action_pressed("A")):
-			turn_left()
 		
 	#	forward and backward inputs
-		if(Input.is_action_pressed("W")):
+		if(Input.is_action_pressed("ui_up")):
 			acceleration_actions()
-		elif(Input.is_action_pressed("S")):
+		elif(Input.is_action_pressed("ui_down")):
 			decceleration_actions()
 			
-		if(Input.is_action_pressed("ui_accept")):
+		if(Input.is_action_pressed("ui_right")):
+			turn_right()
+		elif(Input.is_action_pressed("ui_left")):
+			turn_left()
+			
+		if(Input.is_action_pressed("ui_drift")):
 			drift()
 				
 		
@@ -135,6 +227,11 @@ func reset_values() -> void:
 	$driftSmokeRight.emitting = false
 #	instance_drift_effects(false)
 
+func join_player_to_car() -> void:
+	if(in_control and player != null):
+		player.global_transform.origin = lerp(player.global_transform.origin, $seatLeft.global_transform.origin, 0.5)
+		player.get_node("Mesh").global_transform.basis = $seatLeft.global_transform.basis
+#		player.rotation_degrees.y += 90
 	
 func update_camera_position() -> void:
 	if(is_moving_backwards()):
@@ -155,12 +252,13 @@ func activate_car_back_lights() -> void:
 		set_back_lights_sprite_color(Color(1, 1, 1, 1))
 
 func drift() -> void:
-	if(current_velocity > max_velocity/4):
+	if(current_velocity > max_velocity/6):
 #		set_front_wheels_friction_lerp(5-drift_force, 0.15)
 #		set_back_wheels_friction_lerp(2-drift_force, 0.075)
 #		max_steering_angle *= 1.2
 		set_wheels_roll_influence_lerp(drift_force, 0.03)
 		instance_drift_effects()
+		engine_force = 60
 		
 func get_wheel_associated_drift_effect_raycast(wheel : VehicleWheel) -> RayCast:
 	for raycast in $driftEffectRaycasts.get_children():
@@ -202,12 +300,9 @@ func brake_car() -> void:
 	if(get_velocity() > 0):
 		brake = brake_force
 		
-func fix_speed_cap_overlap() -> void:
-	if(current_velocity > max_velocity+0.5 and steering_direction == STEERING_NONE):
-		engine_force = -38
-
 func get_velocity() -> float:
-	var return_velocity : float = abs(linear_velocity.x) + abs(linear_velocity.z)
+#	var return_velocity : float = abs(linear_velocity.x) + abs(linear_velocity.z)
+	var return_velocity : float = abs(linear_velocity.length())
 	return return_velocity
 	
 func get_backwards_velocity() -> float:
@@ -225,12 +320,23 @@ func turn_right() -> void:
 	set_left_wheels_suspension_force(4050)
 
 func accelerate() -> void:
+	var accel_modifier : float = 1.0
+	if(rotation_degrees.x <= -20 and rotation_degrees.x >= -50 and $hasFloorInFront.get_collider() == null):
+		accel_modifier = abs(rotation_degrees.x * 3)
+	elif(rotation_degrees.x <= -20 and rotation_degrees.x >= -50 and current_velocity < max_velocity):
+		accel_modifier = abs(rotation_degrees.x)
+
 	going_backwards = false
 	accelerating = true
 	deccelerating = false
 	if((current_velocity < max_velocity) or going_backwards):
-		engine_force = engine_power * 1.5
+		engine_force = engine_power
 		current_velocity = get_velocity()
+		last_origin = global_transform.origin
+	if(accel_modifier != 1.0):
+		engine_force = engine_power + (accel_modifier * 2.7)
+		current_velocity = get_velocity()
+		last_origin = global_transform.origin
 		
 func deccelerate() -> void:
 	accelerating = false
@@ -249,7 +355,8 @@ func acceleration_actions() -> void:
 	
 func decceleration_actions() -> void:
 	deccelerate()
-	max_steering_angle *= 2.2
+	if(going_backwards):
+		max_steering_angle = 1.5
 	direction = DIRECTION_BACKWARDS
 	activate_car_back_lights()
 	update_initial_backwards_velocity()
@@ -421,3 +528,14 @@ func set_back_lights_sprite_color(new_color : Color) -> void:
 func set_back_lights_color(new_color : Color) -> void:
 	for light in back_lights:
 		light.light_color = new_color
+
+func _on_getInCar_body_entered(body: Node) -> void:
+	if(body.name == "player"):
+		player_near = true
+		player = body
+
+func _on_getInCar_body_exited(body: Node) -> void:
+	if(body.name == "player"):
+		player_near = false
+#		player = null
+		

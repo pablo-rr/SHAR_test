@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/misc_sound.wav-9c7c6e64cda7261b579bb5b629f46d0a.sample"
+
+[deps]
+
+source_file="res://art/audio/sfx/UI/misc_sound.wav"
+dest_files=[ "res://.import/misc_sound.wav-9c7c6e64cda7261b579bb5b629f46d0a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

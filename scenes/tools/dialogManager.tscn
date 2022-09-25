@@ -1,0 +1,120 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Spatial
+
+signal dialog_finished
+
+export var character_1_path : NodePath
+export var character_2_path : NodePath
+export var character_1_height_offset : float = 0.0
+export var character_2_height_offset : float = 0.0
+
+onready var character_1 : Spatial = get_node(character_1_path)
+onready var character_2 : Spatial = get_node(character_2_path)
+
+onready var dialog_parts : Array = []
+onready var current_dialog_part : int = 0
+onready var active : bool = false
+
+func _ready() -> void:
+	$character1Position.global_transform.origin.y += character_1_height_offset
+	$character2Position.global_transform.origin.y += character_2_height_offset
+#	get_parent().UI.get_node(\"missionUI/objective/continue\").connect(\"button_down\", get_parent().UI.get_node(\"missionUI\"), \"hide_mission_objective\")
+#	get_parent().UI.get_node(\"missionUI/objective/continue\").connect(\"button_down\", self, \"end\")
+	
+	for child in get_children():
+		if(child is DialogPart):
+			dialog_parts.append(child)
+			
+func start() -> void:
+	get_parent().UI.get_node(\"missionUI\").start_cinematic()
+	get_parent().UI.get_node(\"carUI\").visible = false
+	get_parent().UI.get_node(\"generalUI\").visible = false
+	$Camera.current = true
+	character_1.global_transform.origin = $character1Position.global_transform.origin
+	character_2.global_transform.origin = $character2Position.global_transform.origin
+	active = true
+	
+	character_1.set_physics_process(false)
+	character_2.set_physics_process(false)
+	\"res://resources/fonts/data/coolvetica.ttf\"
+	if(character_1.collision_layer == CollisionEnums.COLLISION_NPC):
+		character_1.axis_lock_linear_x = true
+		character_1.axis_lock_linear_y = true
+		character_1.axis_lock_linear_z = true
+	elif(character_2.collision_layer == CollisionEnums.COLLISION_NPC):
+		character_2.axis_lock_linear_x = true
+		character_2.axis_lock_linear_y = true
+		character_2.axis_lock_linear_z = true
+		
+	play_dialog()
+	
+func end() -> void:
+	character_1.set_physics_process(true)
+	character_2.set_physics_process(true)
+	$Camera.current = false
+	if(character_1.collision_layer == CollisionEnums.COLLISION_PLAYER):
+		character_1.get_node(\"camPivotY/camPivotX/Camera\").current = true
+	elif(character_1.collision_layer == CollisionEnums.COLLISION_NPC):
+		character_1.axis_lock_linear_x = false
+		character_1.axis_lock_linear_y = false
+		character_1.axis_lock_linear_z = false
+		
+	if(character_2.collision_layer == CollisionEnums.COLLISION_PLAYER):
+		character_2.get_node(\"camPivotY/camPivotX/Camera\").current = true
+	elif(character_2.collision_layer == CollisionEnums.COLLISION_NPC):
+		character_2.axis_lock_linear_x = false
+		character_2.axis_lock_linear_y = false
+		character_2.axis_lock_linear_z = false
+		
+	active = false
+	get_parent().UI.get_node(\"generalUI\").visible = true
+	get_parent().UI.get_node(\"missionUI\").end_cinematic()
+#	get_parent().UI.get_node(\"missionUI\").hide_mission_objective()
+	emit_signal(\"dialog_finished\")
+	
+func play_dialog() -> void:
+	var dialog : DialogPart = dialog_parts[current_dialog_part]
+	var dialog_audio = AudioStreamPlayer.new()
+	dialog_audio.stream = dialog.dialog_audio
+	dialog_audio.connect(\"finished\", self, \"next_dialog\", [dialog])
+	
+	yield(get_tree().create_timer(dialog.intro_delay), \"timeout\")
+	
+	if(dialog.character_talking == dialog.CHARACTER_TALKING_1):
+		$Camera.look_at_from_position($character1CamPos.global_transform.origin, $character1Position.global_transform.origin, Vector3(0, 1, 0))
+#		dialog_audio.global_transform.origin = $character1Position.global_transform.origin
+	elif(dialog.character_talking == dialog.CHARACTER_TALKING_2):
+		$Camera.look_at_from_position($character2CamPos.global_transform.origin, $character2Position.global_transform.origin, Vector3(0, 1, 0))
+#		dialog_audio.global_transform.origin = $character2Position.global_transform.origin
+	
+	add_child(dialog_audio)
+	dialog_audio.play()
+	
+func next_dialog(previous_dialog : DialogPart):
+	if(current_dialog_part < dialog_parts.size() -1 and active):
+		yield(get_tree().create_timer(previous_dialog.next_dialog_delay), \"timeout\")
+		current_dialog_part += 1
+		play_dialog()
+	elif(active):
+		end()
+	
+"
+
+[node name="dialogManager" type="Spatial"]
+script = SubResource( 1 )
+
+[node name="character1Position" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0 )
+
+[node name="character1CamPos" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.71493, -1.62148 )
+
+[node name="character2Position" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+
+[node name="character2CamPos" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.71493, 1.621 )
+
+[node name="Camera" type="Camera" parent="."]

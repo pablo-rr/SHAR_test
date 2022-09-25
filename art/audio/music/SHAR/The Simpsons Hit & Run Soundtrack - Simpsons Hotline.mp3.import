@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Simpsons Hotline.mp3-3ffca5887d780b10844aaf4111e530ad.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Simpsons Hotline.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Simpsons Hotline.mp3-3ffca5887d780b10844aaf4111e530ad.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

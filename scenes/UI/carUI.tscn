@@ -15,7 +15,7 @@ onready var vehicle : VehicleBody = get_node(vehicle_path).get_node(\"vehicle\")
 onready var velocity : float = 0
 onready var min_angle : float = -133.8
 onready var max_angle : float = 131
-onready var total_angle_steps : float = abs(max_angle) + abs($speedometer2/marker.rect_rotation)
+onready var total_angle_steps : float = abs(min_angle) + abs(max_angle)
 onready var total_velocity_steps : float = 1 / vehicle.max_velocity
 
 func _ready() -> void:
@@ -23,19 +23,11 @@ func _ready() -> void:
 	print(total_angle_steps)
 
 func _physics_process(delta : float) -> void:
-	var fixed_velocity : float
+	var rotation_step : float = (total_angle_steps / vehicle.max_velocity)
 	var fixed_rotation : float = (total_angle_steps * total_velocity_steps * velocity) + min_angle
 	velocity = vehicle.get_velocity()
-#	$speedometer2/marker.rect_rotation = max_angle - (total_angle_steps / velocity)
-	$speedometer2/marker.rect_rotation = lerp($speedometer2/marker.rect_rotation, fixed_rotation, 0.08)
-
-#	print(max_angle - (total_angle_steps / velocity))
-#	if(velocity > vehicle.max_velocity):
-#		fixed_velocity = round(vehicle.max_velocity*velocityAdjustment)
-#	else:
-#		fixed_velocity = round(velocity*velocityAdjustment)
-	$speed.text = str(fixed_velocity)
-	$speedometer2/marker.rect_rotation = lerp($speedometer2/marker.rect_rotation, -133.1 + fixed_velocity*3, 0.1)
+	$speedometer2/marker.rect_rotation = lerp($speedometer2/marker.rect_rotation, vehicle.current_velocity * rotation_step, 0.08)
+	$speedometer2/marker.rect_rotation -= min_angle
 "
 
 [node name="carUI" type="Control"]

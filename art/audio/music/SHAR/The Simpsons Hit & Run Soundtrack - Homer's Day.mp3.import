@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Homer's Day.mp3-2cfda757429f50daa603ec36fb449839.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Homer's Day.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Homer's Day.mp3-2cfda757429f50daa603ec36fb449839.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

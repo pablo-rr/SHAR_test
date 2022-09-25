@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Petty Theft Homer.mp3-7acbf9e81b753feaa1e1a370cd2cef2e.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Petty Theft Homer.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Petty Theft Homer.mp3-7acbf9e81b753feaa1e1a370cd2cef2e.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

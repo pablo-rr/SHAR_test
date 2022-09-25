@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/The Simpsons Hit & Run Soundtrack - Blind Bigger Brother.mp3-9ff28c8c35703abb2f21f59f8a2b5a06.mp3str"
+
+[deps]
+
+source_file="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Blind Bigger Brother.mp3"
+dest_files=[ "res://.import/The Simpsons Hit & Run Soundtrack - Blind Bigger Brother.mp3-9ff28c8c35703abb2f21f59f8a2b5a06.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

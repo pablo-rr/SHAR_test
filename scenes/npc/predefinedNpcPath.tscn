@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scripts/AI/PathAI.gd" type="Script" id=1]
+[ext_resource path="res://scenes/tools/smallInflueceArea.tscn" type="PackedScene" id=2]
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends Area
+
+signal influence_entered
+
+export var color : Color
+export var collide_with_player : bool = false
+export var collide_with_player_car : bool = false
+export var collide_with_npc : bool = false
+export var collide_with_npc_car : bool = false
+
+func _ready() -> void:
+	$influence.get_surface_material(0).set_shader_param(\"albedo\", color)
+	$influence.get_surface_material(0).set_shader_param(\"emission_color\", color)
+
+	
+	if(collide_with_player):
+		collision_mask += CollisionEnums.COLLISION_PLAYER
+	elif(collide_with_player_car):
+		collision_mask += CollisionEnums.COLLISION_PLAYER_CAR
+	elif(collide_with_npc):
+		collision_mask += CollisionEnums.COLLISION_NPC
+	elif(collide_with_npc_car):
+		collision_mask += CollisionEnums.COLLISION_NPC_CAR
+
+#func set_color(new_color : Color) -> void:
+#	$influence.get_surface_material(0).set_shader_param(\"albedo\", new_color)
+#	$influence.get_surface_material(0).set_shader_param(\"emission_color\", new_color)
+
+func _on_influenceArea_body_entered(body: Node) -> void:
+	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
+	or body.collision_layer == CollisionEnums.COLLISION_PLAYER_CAR
+	or body.collision_layer == CollisionEnums.COLLISION_NPC
+	or body.collision_layer == CollisionEnums.COLLISION_NPC_CAR):
+		emit_signal(\"influence_entered\", body, self)
+"
+
+[node name="predefinedNpcPath" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="influenceArea" parent="." instance=ExtResource( 2 )]
+script = SubResource( 5 )
+
+[node name="influenceArea2" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0 )
+script = SubResource( 5 )
