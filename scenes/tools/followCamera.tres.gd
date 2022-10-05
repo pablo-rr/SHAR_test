@@ -7,7 +7,7 @@ export var followOffset : Vector3
 
 var nodeFollowing : Node
 var nodeLookingAt : Node
-onready var nodeLookingAtPath : NodePath = @"../playerCar/car/vehicle"
+onready var nodeLookingAtPath : NodePath = @"../cars/car/vehicle"
 
 func _ready() -> void:
 	setupNodes()

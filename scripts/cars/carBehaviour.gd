@@ -1,3 +1,10 @@
+# Suspension travel    50
+# Suspension stiffness 30
+# Suspension max force 6000
+# 
+# Damping compression  1.4
+# Damping relaxation   1.5 
+
 extends VehicleBody
  ## If true, the car won't detect player inputs.
 export var AI : bool = false
@@ -104,7 +111,6 @@ func angle_difference(angle1, angle2):
 	return diff if abs(diff) < 180 else diff + (360 * -sign(diff))
 
 func ai_follow_path() -> void:
-#	Engine.time_scale = 0.5
 	if(current_path_point != null):
 		
 		var player_2d_position : Vector2 = Vector2(global_transform.origin.x, global_transform.origin.z).normalized()
@@ -157,7 +163,7 @@ func align_character_and_car_cameras() -> void:
 		player
 	
 func get_in_car_inputs(event : InputEvent) -> void:
-	if(player_near and event.is_action_pressed("ui_get_in_car") and !in_control and get_velocity() <= 0.3):
+	if(player_near and event.is_action_pressed("ui_action") and !in_control and get_velocity() <= 0.3):
 		collision_layer = CollisionEnums.COLLISION_PLAYER_CAR
 		var cam = transition_camera.instance()
 		add_child(cam)
@@ -166,17 +172,22 @@ func get_in_car_inputs(event : InputEvent) -> void:
 		player.enabled = false
 		player.get_node("CollisionShape").disabled = true
 		player.get_node("Mesh").rotation_degrees = $seatLeft.rotation_degrees
+		player.emit_signal("entered_car")
 #		in_control = true
-	elif(player != null and event.is_action_pressed("ui_get_in_car") and in_control and get_velocity() <= 0.3):
+	elif(player != null and event.is_action_pressed("ui_action") and in_control and get_velocity() <= 0.3):
 		collision_layer = CollisionEnums.COLLISION_NPC_CAR
 		var cam = transition_camera.instance()
 		add_child(cam)
 		cam.setup(player, get_parent().get_parent().get_parent().get_node("followCamera"), player.get_node("camPivotY/camPivotX/Camera"))
 		in_control = false
-		player.transform.origin.x += 2
+#		player.transform.origin.x += 2
+		var walling_direction : Vector2 = Vector2(global_transform.basis.x.x, global_transform.basis.x.z)
+		player.transform.origin.x += walling_direction.x * 2
+		player.transform.origin.z += walling_direction.y * 2
 		player.enabled = true
 		player.get_node("Mesh").rotation_degrees = Vector3(0, 0, 0)
 		player.get_node("CollisionShape").disabled = false
+		player.emit_signal("exited_car")
 		
 func get_in_car() -> void:
 	in_control = true
@@ -258,7 +269,8 @@ func drift() -> void:
 #		max_steering_angle *= 1.2
 		set_wheels_roll_influence_lerp(drift_force, 0.03)
 		instance_drift_effects()
-		engine_force = 60
+		if(accelerating):
+			engine_force = 60
 		
 func get_wheel_associated_drift_effect_raycast(wheel : VehicleWheel) -> RayCast:
 	for raycast in $driftEffectRaycasts.get_children():
@@ -364,8 +376,8 @@ func decceleration_actions() -> void:
 # extra_pitch is to make it extra noisy
 func engine_sound(extra_pitch : float) -> void:
 	var pitch : float = (current_velocity / (max_velocity * 0.8)) + extra_pitch
-	if(pitch > 1 + extra_pitch):
-		pitch = 1 + extra_pitch
+#	if(pitch > 1 + extra_pitch):
+#		pitch = 1 + extra_pitch
 	$engine.pitch_scale = pitch
 		
 func fix_car_rotation_degrees_in_air() -> void:
@@ -531,11 +543,13 @@ func set_back_lights_color(new_color : Color) -> void:
 
 func _on_getInCar_body_entered(body: Node) -> void:
 	if(body.name == "player"):
+		get_parent().get_parent().get_parent().get_node("ui/generalUI/action").visible = true
 		player_near = true
 		player = body
 
 func _on_getInCar_body_exited(body: Node) -> void:
 	if(body.name == "player"):
+		get_parent().get_parent().get_parent().get_node("ui/generalUI/action").visible = false
 		player_near = false
 #		player = null
 		

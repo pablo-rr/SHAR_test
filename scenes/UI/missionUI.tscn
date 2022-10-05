@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://art/UI/black9panel.png" type="Texture" id=1]
 [ext_resource path="res://art/UI/warning.png" type="Texture" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://resources/fonts/fonts/coolvetica_56.tres" type="DynamicFont" id=4]
 [ext_resource path="res://resources/fonts/fonts/coolvetica_200.tres" type="DynamicFont" id=5]
 [ext_resource path="res://art/audio/music/mission_complete.mp3" type="AudioStream" id=6]
+[ext_resource path="res://resources/uiTheme.theme" type="Theme" id=7]
+[ext_resource path="res://scripts/UI/ButtonCool.gd" type="Script" id=8]
+[ext_resource path="res://art/audio/music/gameOver.mp3" type="AudioStream" id=9]
 
 [sub_resource type="GDScript" id=22]
 script/source = "extends Control
@@ -26,6 +29,12 @@ func hide_mission_objective() -> void:
 	
 func show_mission_completed() -> void:
 	$AnimationPlayer.play(\"mission_completed\")
+	
+func show_mission_failed() -> void:
+	$AnimationPlayer.play(\"mission_failed\")
+	
+func hide_mission_failed() -> void:
+	$AnimationPlayer.play(\"hide_mission_failed\")
 
 func _on_continue_button_down() -> void:
 	pass # Replace with function body.
@@ -315,6 +324,188 @@ tracks/25/keys = {
 "update": 1,
 "values": [ false ]
 }
+tracks/26/type = "bezier"
+tracks/26/path = NodePath("missionFailed:modulate:r")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/27/type = "bezier"
+tracks/27/path = NodePath("missionFailed:modulate:g")
+tracks/27/interp = 1
+tracks/27/loop_wrap = true
+tracks/27/imported = false
+tracks/27/enabled = true
+tracks/27/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/28/type = "bezier"
+tracks/28/path = NodePath("missionFailed:modulate:b")
+tracks/28/interp = 1
+tracks/28/loop_wrap = true
+tracks/28/imported = false
+tracks/28/enabled = true
+tracks/28/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/29/type = "bezier"
+tracks/29/path = NodePath("missionFailed:modulate:a")
+tracks/29/interp = 1
+tracks/29/loop_wrap = true
+tracks/29/imported = false
+tracks/29/enabled = true
+tracks/29/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/30/type = "bezier"
+tracks/30/path = NodePath("missionFailed/HBoxContainer/no:enabled_focus_mode")
+tracks/30/interp = 1
+tracks/30/loop_wrap = true
+tracks/30/imported = false
+tracks/30/enabled = true
+tracks/30/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/31/type = "value"
+tracks/31/path = NodePath("missionFailed/HBoxContainer/no:disabled")
+tracks/31/interp = 1
+tracks/31/loop_wrap = true
+tracks/31/imported = false
+tracks/31/enabled = true
+tracks/31/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+tracks/32/type = "value"
+tracks/32/path = NodePath("missionFailed/HBoxContainer/yes:disabled")
+tracks/32/interp = 1
+tracks/32/loop_wrap = true
+tracks/32/imported = false
+tracks/32/enabled = true
+tracks/32/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+tracks/33/type = "value"
+tracks/33/path = NodePath("missionFailed:modulate")
+tracks/33/interp = 1
+tracks/33/loop_wrap = true
+tracks/33/imported = false
+tracks/33/enabled = true
+tracks/33/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+tracks/34/type = "value"
+tracks/34/path = NodePath("missionFailed:rect_position")
+tracks/34/interp = 1
+tracks/34/loop_wrap = true
+tracks/34/imported = false
+tracks/34/enabled = true
+tracks/34/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 0 ) ]
+}
+tracks/35/type = "value"
+tracks/35/path = NodePath("missionFailed/HBoxContainer/yes:enabled_focus_mode")
+tracks/35/interp = 1
+tracks/35/loop_wrap = true
+tracks/35/imported = false
+tracks/35/enabled = true
+tracks/35/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0 ]
+}
+tracks/36/type = "value"
+tracks/36/path = NodePath("missionFailedSfx:playing")
+tracks/36/interp = 1
+tracks/36/loop_wrap = true
+tracks/36/imported = false
+tracks/36/enabled = true
+tracks/36/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/37/type = "value"
+tracks/37/path = NodePath("missionFailed:rect_size")
+tracks/37/interp = 1
+tracks/37/loop_wrap = true
+tracks/37/imported = false
+tracks/37/enabled = true
+tracks/37/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 1080 ) ]
+}
+tracks/38/type = "value"
+tracks/38/path = NodePath("missionComplete:rect_size")
+tracks/38/interp = 1
+tracks/38/loop_wrap = true
+tracks/38/imported = false
+tracks/38/enabled = true
+tracks/38/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 1080 ) ]
+}
+tracks/39/type = "value"
+tracks/39/path = NodePath("info:rect_size")
+tracks/39/interp = 1
+tracks/39/loop_wrap = true
+tracks/39/imported = false
+tracks/39/enabled = true
+tracks/39/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 1080 ) ]
+}
+tracks/40/type = "value"
+tracks/40/path = NodePath("cinematicBars/top:rect_size")
+tracks/40/interp = 1
+tracks/40/loop_wrap = true
+tracks/40/imported = false
+tracks/40/enabled = true
+tracks/40/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 170 ) ]
+}
+tracks/41/type = "value"
+tracks/41/path = NodePath("cinematicBars/bottom:rect_size")
+tracks/41/interp = 1
+tracks/41/loop_wrap = true
+tracks/41/imported = false
+tracks/41/enabled = true
+tracks/41/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1920, 170 ) ]
+}
 
 [sub_resource type="Animation" id=19]
 resource_name = "end_cinematic"
@@ -341,6 +532,98 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
 "values": [ Vector2( 0, 910 ), Vector2( 0, 1080 ) ]
+}
+
+[sub_resource type="Animation" id=37]
+resource_name = "hide_mission_failed"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("missionFailed:modulate:r")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("missionFailed:modulate:g")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("missionFailed:modulate:b")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("missionFailed:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("missionFailed/HBoxContainer/yes:disabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("missionFailed/HBoxContainer/yes:enabled_focus_mode")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("missionFailed/HBoxContainer/no:enabled_focus_mode")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("missionFailed/HBoxContainer/no:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=24]
@@ -402,6 +685,54 @@ tracks/4/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 1,
 "values": [ true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("missionFailed/HBoxContainer/yes:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("missionFailed/HBoxContainer/no:disabled")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("missionFailed/HBoxContainer/no:enabled_focus_mode")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("missionFailed/HBoxContainer/yes:enabled_focus_mode")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
 }
 
 [sub_resource type="Animation" id=27]
@@ -576,6 +907,122 @@ tracks/15/keys = {
 "values": [ false ]
 }
 
+[sub_resource type="Animation" id=36]
+resource_name = "mission_failed"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("missionFailed:modulate:r")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("missionFailed:modulate:g")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("missionFailed:modulate:b")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("missionFailed:modulate:a")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("missionFailed/HBoxContainer/no:disabled")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ true, false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("missionFailed/HBoxContainer/yes:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("missionFailed:rect_position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("missionFailed/HBoxContainer/yes:enabled_focus_mode")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 2 ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("missionFailed/HBoxContainer/no:enabled_focus_mode")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 2 ]
+}
+tracks/9/type = "value"
+tracks/9/path = NodePath("missionFailedSfx:playing")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
 [sub_resource type="Animation" id=25]
 resource_name = "show_mission_objective"
 tracks/0/type = "value"
@@ -623,6 +1070,66 @@ tracks/3/enabled = true
 tracks/3/keys = {
 "points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
 "times": PoolRealArray( 0 )
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("missionFailed:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("missionFailed/HBoxContainer/yes:enabled_focus_mode")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("missionFailed/HBoxContainer/no:enabled_focus_mode")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("missionFailed/HBoxContainer/no:disabled")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/8/type = "value"
+tracks/8/path = NodePath("missionFailed/HBoxContainer/yes:disabled")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
 }
 
 [sub_resource type="Animation" id=20]
@@ -742,6 +1249,28 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="GDScript" id=38]
+script/source = "extends Label
+
+
+# Declare member variables here. Examples:
+# var a: int = 2
+# var b: String = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	rect_pivot_offset = rect_size / 2
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta: float) -> void:
+#	pass
+"
+
+[sub_resource type="StyleBoxFlat" id=35]
+bg_color = Color( 0, 0, 0, 0.584314 )
+
 [sub_resource type="StyleBoxFlat" id=21]
 bg_color = Color( 0, 0, 0, 1 )
 
@@ -752,15 +1281,19 @@ bg_color = Color( 0.223529, 0.301961, 0.517647, 1 )
 bg_color = Color( 0, 0, 0, 1 )
 
 [node name="missionUI" type="Control"]
+pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = ExtResource( 7 )
 script = SubResource( 22 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 18 )
 anims/end_cinematic = SubResource( 19 )
+anims/hide_mission_failed = SubResource( 37 )
 anims/hide_mission_objective = SubResource( 24 )
 anims/mission_completed = SubResource( 27 )
+anims/mission_failed = SubResource( 36 )
 anims/show_mission_objective = SubResource( 25 )
 anims/start_cinematic = SubResource( 20 )
 
@@ -830,13 +1363,14 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -712.0
 margin_top = -103.5
-margin_right = 712.0
+margin_right = 1026.0
 margin_bottom = 103.5
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 custom_fonts/font = ExtResource( 5 )
-text = "Mission completed"
+text = "str_missionCompleted"
 align = 1
 valign = 1
+script = SubResource( 38 )
 
 [node name="completed" type="Label" parent="missionComplete"]
 visible = false
@@ -851,9 +1385,77 @@ margin_right = 712.0
 margin_bottom = 103.5
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 custom_fonts/font = ExtResource( 5 )
-text = "Mission completed"
+text = "str_missionCompleted"
 align = 1
 valign = 1
+
+[node name="missionFailed" type="Control" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1920.0
+margin_right = 1920.0
+
+[node name="Panel" type="Panel" parent="missionFailed"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 35 )
+
+[node name="failed" type="Label" parent="missionFailed"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -712.0
+margin_top = 209.0
+margin_right = 712.0
+margin_bottom = 416.0
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = ExtResource( 5 )
+text = "str_missionFailed"
+align = 1
+valign = 1
+
+[node name="repeat" type="Label" parent="missionFailed"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 32.5
+margin_bottom = 115.5
+custom_fonts/font = ExtResource( 3 )
+text = "str_repeatMission"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="missionFailed"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = 157.0
+margin_bottom = 246.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 100
+alignment = 1
+
+[node name="yes" type="Button" parent="missionFailed/HBoxContainer"]
+margin_left = 640.0
+margin_right = 910.0
+margin_bottom = 89.0
+rect_min_size = Vector2( 270, 0 )
+disabled = true
+enabled_focus_mode = 0
+text = "btn_yes"
+flat = true
+script = ExtResource( 8 )
+
+[node name="no" type="Button" parent="missionFailed/HBoxContainer"]
+margin_left = 1010.0
+margin_right = 1280.0
+margin_bottom = 89.0
+rect_min_size = Vector2( 270, 0 )
+disabled = true
+enabled_focus_mode = 0
+text = "btn_no"
+flat = true
+script = ExtResource( 8 )
 
 [node name="cinematicBars" type="Control" parent="."]
 visible = false
@@ -863,15 +1465,35 @@ anchor_bottom = 1.0
 [node name="top" type="Panel" parent="cinematicBars"]
 anchor_right = 1.0
 margin_top = -170.0
-margin_right = 5760.0
 custom_styles/panel = SubResource( 21 )
 
 [node name="bottom" type="Panel" parent="cinematicBars"]
 anchor_right = 1.0
 margin_top = 1080.0
-margin_right = 5760.0
 margin_bottom = 1250.0
 custom_styles/panel = SubResource( 21 )
+
+[node name="skip" type="Button" parent="cinematicBars/bottom"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 40.0
+margin_top = -44.5
+margin_right = 505.0
+margin_bottom = 44.5
+text = "btn_skipDialog"
+flat = true
+script = ExtResource( 8 )
+
+[node name="cancel" type="Button" parent="cinematicBars/bottom"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 650.0
+margin_top = -44.5
+margin_right = 1001.0
+margin_bottom = 44.5
+text = "btn_cancel"
+flat = true
+script = ExtResource( 8 )
 
 [node name="objective" type="Control" parent="."]
 anchor_right = 1.0
@@ -952,14 +1574,20 @@ margin_left = 26.0
 margin_top = 925.0
 margin_right = 339.0
 margin_bottom = 1014.0
-custom_colors/font_color_focus = Color( 0, 0, 0, 1 )
+focus_mode = 0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_hover = Color( 1, 0.819608, 0, 1 )
 custom_colors/font_color_pressed = Color( 1, 0.631373, 0, 1 )
 custom_fonts/font = ExtResource( 3 )
 disabled = true
-text = "Continuar"
+text = "btn_continue"
 flat = true
+script = ExtResource( 8 )
 
 [node name="missionCompleteSfx" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
+bus = "Music"
+
+[node name="missionFailedSfx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 9 )
+bus = "Music"

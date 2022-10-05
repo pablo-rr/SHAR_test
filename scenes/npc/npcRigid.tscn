@@ -7,13 +7,15 @@
 script/source = "extends RigidBody
 
 signal mission_assigned
+signal mission_assigned_skip_dialog
+
 
 onready var ai_path : PathAI = null
 onready var current_path_point : Area = null
 onready var current_path_point_index : int = 0
 onready var speed : float = 3.0
 onready var gravity_speed : float = 0.0
-onready var mission_assigned : bool = false
+onready var mission_is_assigned : bool = false
 onready var ragdoll : bool = false
 onready var ragdoll_time : float = 0.0
 onready var panic : bool = false
@@ -25,16 +27,29 @@ onready var panic_dir_time : float = 0.0
 func _ready() -> void:
 	randomize()
 #	ai_path = get_parent().get_node(\"AIPaths/NpcPathAI\")
-	if(get_parent() is MissionManager):
+	if(get_parent() is MissionTrigger):
 		$mission.visible = true
 		
 func _input(event: InputEvent) -> void:
-	if(event.is_action_pressed(\"ui_action\") and looking_at_player and !mission_assigned):
-		get_parent().UI.get_node(\"generalUI/action\").visible = false
-		$mission.visible = false
-		mission_assigned = true
-		emit_signal(\"mission_assigned\")
+	if(event.is_action_pressed(\"ui_action\") and looking_at_player and !mission_is_assigned):
+		assign_mission()
 	
+func reset_mission_assignment() -> void:
+	mission_is_assigned = false
+	$mission.visible = true
+	
+func assign_mission() -> void:
+	get_parent().UI.get_node(\"generalUI/action\").visible = false
+	$mission.visible = false
+	mission_is_assigned = true
+	emit_signal(\"mission_assigned\")
+	
+func assign_mission_skip_dialog() -> void:
+	get_parent().UI.get_node(\"generalUI/action\").visible = false
+	$mission.visible = false
+	mission_is_assigned = true
+	emit_signal(\"mission_assigned_skip_dialog\")
+		
 func set_ai_path(new_path : PathAI) -> void:
 	ai_path = new_path
 	current_path_point = new_path.path_points[0]
@@ -57,7 +72,11 @@ func _physics_process(delta: float) -> void:
 		var direction_2d : Vector3 = Vector3(direction.x, gravity_speed, direction.z)
 		var gravity : float = 0.09
 		linear_velocity = direction_2d * speed
-		look_at_direction(Vector2(current_path_point.global_transform.origin.x, current_path_point.global_transform.origin.z))
+		$Mesh.look_at(current_path_point.global_transform.origin, Vector3(0, 1, 0))
+		$Mesh.rotation_degrees.x = 0
+		$Mesh.rotation_degrees.y += 90
+		$Mesh.rotation_degrees.z = 0
+#		look_at_direction(Vector2(current_path_point.global_transform.origin.x, current_path_point.global_transform.origin.z))
 	elif(ragdoll):
 		ragdoll_time += delta
 		if(linear_velocity.length() < 0.1 or ragdoll_time >= rand_range(2.5, 4.5)):
@@ -100,14 +119,14 @@ func _on_Area_body_entered(body: Node) -> void:
 	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
 	and !ragdoll and !panic):
 		looking_at_player = true
-		if(get_parent() is MissionManager and !mission_assigned):
+		if(get_parent() is MissionTrigger and !mission_is_assigned):
 			get_parent().UI.get_node(\"generalUI/action\").visible = true
 
 func _on_Area_body_exited(body: Node) -> void:
 	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
 	and !ragdoll and !panic and looking_at_player):
 		looking_at_player = false
-	if(get_parent() is MissionManager and !mission_assigned):
+	if(get_parent() is MissionTrigger and !mission_is_assigned):
 			get_parent().UI.get_node(\"generalUI/action\").visible = false
 "
 

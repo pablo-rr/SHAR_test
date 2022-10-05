@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://scenes/AI/debugUI.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/tools/followCamera.tscn" type="PackedScene" id=2]
@@ -6,7 +6,9 @@
 [ext_resource path="res://scenes/UI/carUI.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/cars/test/rick_test.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/player/player.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/missions/triggers/MissionTriggerTest1.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/tools/carFixer.tscn" type="PackedScene" id=8]
+[ext_resource path="res://scenes/UI/pauseUI.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/roads/maker.tscn" type="PackedScene" id=13]
 [ext_resource path="res://scripts/util/DebugCamera.gd" type="Script" id=16]
 [ext_resource path="res://scenes/UI/missionUI.tscn" type="PackedScene" id=25]
@@ -15,23 +17,16 @@
 [sub_resource type="GDScript" id=17]
 script/source = "extends Spatial
 
-
-# Declare member variables here. Examples:
-# var a: int = 2
-# var b: String = \"text\"
-
+onready var can_pause : bool = true
+onready var player_car : Spatial = $cars/car
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 #	$car/vehicle.set_ai_path($AIPaths/PathAI)
-	var mission : Dictionary = MissionData.get_mission_by_id(0)
-	var mission_instance = load(mission.reference).instance()
-	$mission.add_child(mission_instance)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#	pass
+#	var mission : Dictionary = MissionData.get_mission_by_id(1)
+#	var mission_instance = load(mission.reference).instance()
+#	$mission.add_child(mission_instance)
+	TranslationServer.set_locale(\"es\")
 "
 
 [sub_resource type="PanoramaSky" id=1]
@@ -83,7 +78,7 @@ environment = SubResource( 2 )
 
 [node name="debugUI" parent="ui" instance=ExtResource( 1 )]
 visible = false
-nodePath = NodePath("../../playerCar/car/vehicle")
+nodePath = NodePath("../../cars/car/vehicle")
 properties = PoolStringArray( "engine_force", "current_velocity" )
 
 [node name="debugUI2" parent="ui" instance=ExtResource( 1 )]
@@ -101,12 +96,13 @@ anchor_right = 1.0
 margin_bottom = 200.0
 custom_colors/font_color = Color( 1, 0.807843, 0.0509804, 1 )
 custom_fonts/font = ExtResource( 26 )
-text = "Pulsa
-Accion"
+text = "str_action"
 align = 1
 valign = 1
 
 [node name="missionUI" parent="ui" instance=ExtResource( 25 )]
+
+[node name="pauseUI" parent="ui" instance=ExtResource( 9 )]
 
 [node name="map" type="Spatial" parent="."]
 
@@ -356,8 +352,92 @@ collision_mask = 63
 [node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance11/StaticBody"]
 shape = SubResource( 19 )
 
+[node name="MeshInstance13" type="MeshInstance" parent="map/buildings"]
+transform = Transform( 0, 0, 1.3, 1.12583, 1.45, 0, -0.65, 2.51147, 0, -4.12429, 0.27373, -9.70761 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance13"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance13/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance43" type="MeshInstance" parent="map/buildings"]
+transform = Transform( -1.47074e-08, 7.34661e-08, 1.3, 1.2557, 0.450347, 0, -0.336466, 1.68071, -5.68248e-08, -2.55286, 1.39062, -2.89937 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance43"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance43/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance46" type="MeshInstance" parent="map/buildings"]
+transform = Transform( 0.0147143, -1.72728, 0.0217525, 0.129164, 0.196771, -0.00247803, -1.81607e-10, 0.073258, 0.519539, -7.73242, 2.48269, -4.61366 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance46"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance46/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance44" type="MeshInstance" parent="map/buildings"]
+transform = Transform( 1.47072e-08, 5.28957e-08, 1.3, 1.2557, -0.324247, 1.37099e-14, 0.336463, 1.21011, -5.68248e-08, -2.55286, 1.39062, 1.67206 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance44"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance44/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance45" type="MeshInstance" parent="map/buildings"]
+transform = Transform( 1.47072e-09, 5.28957e-08, 1.3, 0.12557, -0.324247, 1.89806e-14, 0.0336463, 1.21011, -5.68248e-08, -2.55286, 2.69183, 1.33534 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance45"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance45/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance48" type="MeshInstance" parent="map/buildings"]
+transform = Transform( -1.47074e-09, 5.28956e-08, 1.3, 0.12557, 0.324249, 9.3947e-14, -0.0336465, 1.21011, -5.68248e-08, -2.55286, 2.76885, -2.35555 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance48"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance48/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
+[node name="MeshInstance47" type="MeshInstance" parent="map/buildings"]
+transform = Transform( -4.41218e-09, -1.58687e-07, -1.3, 0.112583, -0.626398, 4.41221e-08, -0.0649998, -1.08496, 1.64666e-07, -11.9814, 2.62213, -0.690242 )
+mesh = SubResource( 18 )
+
+[node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance47"]
+collision_layer = 16
+collision_mask = 63
+
+[node name="CollisionShape" type="CollisionShape" parent="map/buildings/MeshInstance47/StaticBody"]
+transform = Transform( 1, 0, 0, -1.49012e-08, 1, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 19 )
+
 [node name="MeshInstance4" type="MeshInstance" parent="map/buildings"]
-transform = Transform( 1.3, 0, 0, 0, 2.9, 0, 0, 0, 1.3, -5.97242, 0.142857, -2.5131 )
+transform = Transform( 1.3, 0, 0, 0, 2.9, 0, 0, 0, 1.3, -5.97242, 0.142857, -2.85822 )
 mesh = SubResource( 18 )
 
 [node name="StaticBody" type="StaticBody" parent="map/buildings/MeshInstance4"]
@@ -714,14 +794,28 @@ transform = Transform( 0.956857, -0.0182552, 0.289986, -0.289514, 0.0247072, 0.9
 shadow_enabled = true
 shadow_bias = 0.0
 
-[node name="playerCar" type="Spatial" parent="."]
+[node name="carFixers" type="Spatial" parent="."]
 
-[node name="car" parent="playerCar" instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.47438, -0.375805, -59.9243 )
+[node name="carFixer" parent="carFixers" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -29.7277, 6.14926, -26.1809 )
+
+[node name="carFixer2" parent="carFixers" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -40.7277, 1.14926, 58.8191 )
+
+[node name="cars" type="Spatial" parent="."]
+
+[node name="car" parent="cars" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.046, -0.375805, -56.4351 )
 
 [node name="player" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74862, 1.15125, -53.1113 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.47099, 1.15119, -50.2389 )
 
-[node name="mission" type="Spatial" parent="."]
+[node name="mission" type="Node" parent="."]
+
+[node name="triggers" type="Node" parent="mission"]
+
+[node name="MissionTriggerTest1" parent="mission/triggers" instance=ExtResource( 7 )]
+
+[node name="current" type="Node" parent="mission"]
 
 [node name="AIPaths" type="Spatial" parent="."]

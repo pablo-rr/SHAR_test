@@ -1,0 +1,282 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://resources/uiTheme.theme" type="Theme" id=1]
+[ext_resource path="res://art/UI/menuUI9panel.png" type="Texture" id=2]
+[ext_resource path="res://scripts/UI/ButtonCool.gd" type="Script" id=3]
+[ext_resource path="res://resources/fonts/fonts/coolvetica_96.tres" type="DynamicFont" id=4]
+[ext_resource path="res://art/audio/music/pause.mp3" type="AudioStream" id=5]
+
+[sub_resource type="GDScript" id=23]
+script/source = "extends Control
+
+func _input(event: InputEvent) -> void:
+	if(event.is_action_pressed(\"ui_pause\")):
+		if(!get_tree().paused and get_parent().get_parent().can_pause):
+			pause()
+		elif(get_tree().paused and get_parent().get_parent().can_pause):
+			unpause()
+
+func pause() -> void:
+	get_tree().paused = true
+	$AnimationPlayer.play(\"pause\")
+	
+func unpause() -> void:
+	get_tree().paused = false
+	$AnimationPlayer.play(\"unpause\")
+
+func _on_continue_pressed() -> void:
+	unpause()
+
+func _on_missionSelect_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_options_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_save_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_mainMenu_pressed() -> void:
+	pass # Replace with function body.
+
+func _on_exitGame_pressed() -> void:
+	get_tree().quit()
+"
+
+[sub_resource type="Animation" id=20]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("menu:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("menu:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -1080, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("menu:rect_size:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 1920, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("menu:rect_size:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 1080, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "bezier"
+tracks/4/path = NodePath("AudioStreamPlayer:volume_db")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"points": PoolRealArray( -80, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=21]
+resource_name = "pause"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("menu:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("menu:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -1080, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("AudioStreamPlayer:volume_db")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( -80, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[sub_resource type="Animation" id=22]
+resource_name = "unpause"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("menu:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("menu:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, -1080, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("AudioStreamPlayer:volume_db")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, -80, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[node name="pauseUI" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1920.0
+margin_bottom = -1080.0
+theme = ExtResource( 1 )
+script = SubResource( 23 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+volume_db = -80.0
+autoplay = true
+bus = "Music"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 20 )
+anims/pause = SubResource( 21 )
+anims/unpause = SubResource( 22 )
+
+[node name="menu" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1080.0
+margin_right = 1920.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="menu"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -500.0
+margin_top = -400.0
+margin_right = 500.0
+margin_bottom = 400.0
+texture = ExtResource( 2 )
+patch_margin_left = 300
+patch_margin_top = 300
+patch_margin_right = 300
+patch_margin_bottom = 300
+
+[node name="MarginContainer" type="MarginContainer" parent="menu/NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 100.0
+margin_top = 100.0
+margin_right = -100.0
+margin_bottom = -100.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menu/NinePatchRect/MarginContainer"]
+margin_right = 800.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="continue" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_right = 800.0
+margin_bottom = 89.0
+text = "btn_continue"
+flat = true
+script = ExtResource( 3 )
+
+[node name="missionSelect" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_top = 93.0
+margin_right = 800.0
+margin_bottom = 182.0
+text = "btn_missionSelect"
+flat = true
+script = ExtResource( 3 )
+
+[node name="options" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_top = 186.0
+margin_right = 800.0
+margin_bottom = 275.0
+text = "btn_options"
+flat = true
+script = ExtResource( 3 )
+
+[node name="save" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_top = 279.0
+margin_right = 800.0
+margin_bottom = 368.0
+text = "btn_save"
+flat = true
+script = ExtResource( 3 )
+
+[node name="mainMenu" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_top = 372.0
+margin_right = 800.0
+margin_bottom = 461.0
+text = "btn_mainMenu"
+flat = true
+script = ExtResource( 3 )
+
+[node name="exitGame" type="Button" parent="menu/NinePatchRect/MarginContainer/VBoxContainer"]
+margin_top = 465.0
+margin_right = 800.0
+margin_bottom = 554.0
+text = "btn_exitGame"
+flat = true
+script = ExtResource( 3 )
+
+[node name="pauseMenu" type="Label" parent="menu"]
+anchor_right = 1.0
+margin_top = 60.0
+margin_bottom = 160.0
+custom_fonts/font = ExtResource( 4 )
+text = "str_pause"
+align = 1
+
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/missionSelect" to="." method="_on_missionSelect_pressed"]
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/options" to="." method="_on_options_pressed"]
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/mainMenu" to="." method="_on_mainMenu_pressed"]
+[connection signal="pressed" from="menu/NinePatchRect/MarginContainer/VBoxContainer/exitGame" to="." method="_on_exitGame_pressed"]

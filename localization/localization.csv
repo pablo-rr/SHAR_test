@@ -1,0 +1,20 @@
+id;es;en
+btn_yes;Si;
+btn_no;No;
+btn_continue;Continuar;
+btn_missionSelect;Seleccionar misión;
+btn_options;Opciones;
+btn_save;Guardar partida;
+btn_mainMenu;Menú principal;
+btn_exitGame;Salir del juego;
+btn_cancel;Cancelar;
+btn_skipDialog;Saltar;
+str_missionFailed;¡Misión Fallida!;
+str_missionCompleted;¡Misión completada!;
+str_repeatMission;¿Repetir misión?;
+str_action;"Pulsa\nAcción";
+str_pause;Pausa;
+msnttl_missionTest1;Paseo desestresante;
+msndsc_missionTest1;Sigue los puntos rojos;
+msnttl_missionTest2;Algo pasa en el barrio;
+msndsc_missionTest2;Sigue al misterioso coche negro, ¡No dejes que se te escape!;

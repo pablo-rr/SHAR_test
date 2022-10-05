@@ -39,10 +39,12 @@ scale = 0.1
 material = ExtResource( 1 )
 
 [sub_resource type="CylinderShape" id=4]
-radius = 1.67077
 height = 3.32971
+radius = 1.67077
 
 [node name="carFixer" type="StaticBody"]
+collision_layer = 32
+collision_mask = 2
 script = SubResource( 1 )
 
 [node name="Particles" type="Particles" parent="."]
@@ -68,6 +70,7 @@ material/2 = ExtResource( 1 )
 [node name="repair" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 3 )
 unit_db = 15.0
+bus = "Effects"
 
 [connection signal="area_entered" from="Area" to="." method="_on_Area_area_entered"]
 [connection signal="body_entered" from="Area" to="." method="_on_Area_body_entered"]

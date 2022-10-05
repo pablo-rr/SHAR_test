@@ -1,0 +1,275 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://scripts/missions/MissionManager.gd" type="Script" id=1]
+[ext_resource path="res://scripts/missions/ObjectiveManager.gd" type="Script" id=2]
+[ext_resource path="res://scripts/missions/ObjectiveReachArea.gd" type="Script" id=3]
+[ext_resource path="res://scenes/tools/influeceArea.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/cars/test/rick_test.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scripts/missions/ObjectiveChaseCar.gd" type="Script" id=6]
+[ext_resource path="res://scripts/AI/PathAI.gd" type="Script" id=7]
+[ext_resource path="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Blind Bigger Brother.mp3" type="AudioStream" id=8]
+[ext_resource path="res://art/audio/music/SHAR/The Simpsons Hit & Run Soundtrack - Flowers By Irene.mp3" type="AudioStream" id=9]
+[ext_resource path="res://scripts/missions/ObjectiveGetInCar.gd" type="Script" id=10]
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends Area
+
+signal influence_entered
+
+export var animated : bool = true
+export var color : Color
+export var collide_with_player : bool = false
+export var collide_with_player_car : bool = false
+export var collide_with_npc : bool = false
+export var collide_with_npc_car : bool = false
+
+func _ready() -> void:
+	if(animated):
+		$AnimationPlayer.play(\"idle\")
+	
+	if(collide_with_player):
+		collision_mask += CollisionEnums.COLLISION_PLAYER
+	elif(collide_with_player_car):
+		collision_mask += CollisionEnums.COLLISION_PLAYER_CAR
+	elif(collide_with_npc):
+		collision_mask += CollisionEnums.COLLISION_NPC
+	elif(collide_with_npc_car):
+		collision_mask += CollisionEnums.COLLISION_NPC_CAR
+		
+	$influence.get_surface_material(0).set_shader_param(\"albedo\", color)
+	$influence.get_surface_material(0).set_shader_param(\"emission_color\", color)
+
+#func set_color(new_color : Color) -> void:
+#	if(Engine.editor_hint):
+#		$influence.get_surface_material(0).set_shader_param(\"albedo\", new_color)
+#		$influence.get_surface_material(0).set_shader_param(\"emission_color\", new_color)
+#		color = new_color
+
+func _on_influenceArea_body_entered(body: Node) -> void:
+	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
+	or body.collision_layer == CollisionEnums.COLLISION_PLAYER_CAR
+	or body.collision_layer == CollisionEnums.COLLISION_NPC
+	or body.collision_layer == CollisionEnums.COLLISION_NPC_CAR):
+		print(body)
+		emit_signal(\"influence_entered\", body, self)
+"
+
+[sub_resource type="GDScript" id=8]
+script/source = "extends Area
+
+signal influence_entered
+
+export var animated : bool = true
+export var color : Color
+export var collide_with_player : bool = false
+export var collide_with_player_car : bool = false
+export var collide_with_npc : bool = false
+export var collide_with_npc_car : bool = false
+
+func _ready() -> void:
+	if(animated):
+		$AnimationPlayer.play(\"idle\")
+	
+	if(collide_with_player):
+		collision_mask += CollisionEnums.COLLISION_PLAYER
+	elif(collide_with_player_car):
+		collision_mask += CollisionEnums.COLLISION_PLAYER_CAR
+	elif(collide_with_npc):
+		collision_mask += CollisionEnums.COLLISION_NPC
+	elif(collide_with_npc_car):
+		collision_mask += CollisionEnums.COLLISION_NPC_CAR
+		
+	$influence.get_surface_material(0).set_shader_param(\"albedo\", color)
+	$influence.get_surface_material(0).set_shader_param(\"emission_color\", color)
+
+#func set_color(new_color : Color) -> void:
+#	if(Engine.editor_hint):
+#		$influence.get_surface_material(0).set_shader_param(\"albedo\", new_color)
+#		$influence.get_surface_material(0).set_shader_param(\"emission_color\", new_color)
+#		color = new_color
+
+func _on_influenceArea_body_entered(body: Node) -> void:
+	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
+	or body.collision_layer == CollisionEnums.COLLISION_PLAYER_CAR
+	or body.collision_layer == CollisionEnums.COLLISION_NPC
+	or body.collision_layer == CollisionEnums.COLLISION_NPC_CAR):
+		print(body)
+		emit_signal(\"influence_entered\", body, self)
+"
+
+[node name="MissionTest1" type="Node"]
+script = ExtResource( 1 )
+
+[node name="ObjectiveManager" type="Spatial" parent="."]
+script = ExtResource( 2 )
+
+[node name="ObjectiveGetInCar" type="Spatial" parent="ObjectiveManager"]
+script = ExtResource( 10 )
+
+[node name="ObjectiveReachArea" type="Spatial" parent="ObjectiveManager"]
+visible = false
+script = ExtResource( 3 )
+timed = true
+time = 20.0
+same_music_as_last_objective = false
+music = ExtResource( 9 )
+
+[node name="influenceArea2" parent="ObjectiveManager/ObjectiveReachArea" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.50133, 0, -2.18404 )
+script = SubResource( 7 )
+color = Color( 1, 0, 0, 1 )
+collide_with_player = true
+collide_with_player_car = true
+
+[node name="ObjectiveReachArea2" type="Spatial" parent="ObjectiveManager"]
+visible = false
+script = ExtResource( 3 )
+timed = true
+use_remaining_time = true
+
+[node name="influenceArea2" parent="ObjectiveManager/ObjectiveReachArea2" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -56.4892, 0, 0.7515 )
+script = SubResource( 7 )
+collide_with_player = true
+collide_with_player_car = true
+
+[node name="ObjectiveReachArea3" type="Spatial" parent="ObjectiveManager"]
+visible = false
+script = ExtResource( 3 )
+timed = true
+use_remaining_time = true
+
+[node name="influenceArea3" parent="ObjectiveManager/ObjectiveReachArea3" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -81.5724, 0, 12.7731 )
+script = SubResource( 7 )
+collide_with_player = true
+collide_with_player_car = true
+
+[node name="ObjectiveReachArea4" type="Spatial" parent="ObjectiveManager"]
+visible = false
+script = ExtResource( 3 )
+timed = true
+use_remaining_time = true
+
+[node name="influenceArea4" parent="ObjectiveManager/ObjectiveReachArea4" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -169.906, 0, 15.3097 )
+script = SubResource( 7 )
+collide_with_player = true
+collide_with_player_car = true
+
+[node name="ObjectiveChaseCar" type="Spatial" parent="ObjectiveManager"]
+script = ExtResource( 6 )
+same_music_as_last_objective = false
+music = ExtResource( 8 )
+minimum_distance = 65
+
+[node name="car" parent="ObjectiveManager/ObjectiveChaseCar" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -170, 0, 23 )
+
+[node name="PathAI" type="Spatial" parent="ObjectiveManager/ObjectiveChaseCar"]
+visible = false
+script = ExtResource( 7 )
+
+[node name="influenceArea" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -173.072, 0, 31.8046 )
+script = SubResource( 8 )
+
+[node name="influenceArea2" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -179.34, 0, 57.2618 )
+script = SubResource( 8 )
+
+[node name="influenceArea3" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -152.348, 0, 61.6113 )
+script = SubResource( 8 )
+
+[node name="influenceArea4" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -139.299, 0, 45.4927 )
+script = SubResource( 8 )
+
+[node name="influenceArea5" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -112.819, 0, 45.6206 )
+script = SubResource( 8 )
+
+[node name="influenceArea6" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -87.1275, 0, 41.1643 )
+script = SubResource( 8 )
+
+[node name="influenceArea7" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -63.9232, 0, 43.9444 )
+script = SubResource( 8 )
+
+[node name="influenceArea8" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -52.9078, 0, 27.5932 )
+script = SubResource( 8 )
+
+[node name="influenceArea9" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -56.3235, 0, -33.6041 )
+script = SubResource( 8 )
+
+[node name="influenceArea10" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -65.3593, 0, -53.8502 )
+script = SubResource( 8 )
+
+[node name="influenceArea11" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -83.789, 0, -76.5112 )
+script = SubResource( 8 )
+
+[node name="influenceArea12" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -76.1135, 0, -114.761 )
+script = SubResource( 8 )
+
+[node name="influenceArea13" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -50.4004, 0, -121.541 )
+script = SubResource( 8 )
+
+[node name="influenceArea14" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -33.9632, 0, -105.14 )
+script = SubResource( 8 )
+
+[node name="influenceArea15" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.6634, 0, -86.2281 )
+script = SubResource( 8 )
+
+[node name="influenceArea16" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.1666, 0, 22.4204 )
+script = SubResource( 8 )
+
+[node name="influenceArea17" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.1232, 0, 40.0133 )
+script = SubResource( 8 )
+
+[node name="influenceArea18" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20.21, 0, 58.7062 )
+script = SubResource( 8 )
+
+[node name="influenceArea19" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -26.8621, 0, 87.4894 )
+script = SubResource( 8 )
+
+[node name="influenceArea20" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.44537, 0, 80.9652 )
+script = SubResource( 8 )
+
+[node name="influenceArea21" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 46.0383, 0, 40.4136 )
+script = SubResource( 8 )
+
+[node name="influenceArea22" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3284, 0, 14.6393 )
+script = SubResource( 8 )
+
+[node name="influenceArea23" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 50.7374, 0, -3.79296 )
+script = SubResource( 8 )
+
+[node name="influenceArea24" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 83.7498, 0, -25.8378 )
+script = SubResource( 8 )
+
+[node name="influenceArea25" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 111.059, 0, -41.0827 )
+script = SubResource( 8 )
+
+[node name="influenceArea26" parent="ObjectiveManager/ObjectiveChaseCar/PathAI" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 95.7045, 0, -65.2113 )
+script = SubResource( 8 )

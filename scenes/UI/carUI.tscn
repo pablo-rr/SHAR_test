@@ -10,7 +10,7 @@ script/source = "extends Control
 
 export var velocityAdjustment : float = 2.4
 
-onready var vehicle_path : NodePath = @\"../../playerCar/car\"
+onready var vehicle_path : NodePath = @\"../../cars/car\"
 onready var vehicle : VehicleBody = get_node(vehicle_path).get_node(\"vehicle\")
 onready var velocity : float = 0
 onready var min_angle : float = -133.8

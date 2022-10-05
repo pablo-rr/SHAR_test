@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=2]
 
-[sub_resource type="GDScript" id=5]
+[sub_resource type="GDScript" id=6]
 script/source = "extends Area
 
 signal influence_entered
@@ -13,9 +13,6 @@ export var collide_with_npc : bool = false
 export var collide_with_npc_car : bool = false
 
 func _ready() -> void:
-	$influence.get_surface_material(0).set_shader_param(\"albedo\", color)
-	$influence.get_surface_material(0).set_shader_param(\"emission_color\", color)
-
 	if(animated):
 		$AnimationPlayer.play(\"idle\")
 	
@@ -27,10 +24,15 @@ func _ready() -> void:
 		collision_mask += CollisionEnums.COLLISION_NPC
 	elif(collide_with_npc_car):
 		collision_mask += CollisionEnums.COLLISION_NPC_CAR
+		
+	$influence.get_surface_material(0).set_shader_param(\"albedo\", color)
+	$influence.get_surface_material(0).set_shader_param(\"emission_color\", color)
 
 #func set_color(new_color : Color) -> void:
-#	$influence.get_surface_material(0).set_shader_param(\"albedo\", new_color)
-#	$influence.get_surface_material(0).set_shader_param(\"emission_color\", new_color)
+#	if(Engine.editor_hint):
+#		$influence.get_surface_material(0).set_shader_param(\"albedo\", new_color)
+#		$influence.get_surface_material(0).set_shader_param(\"emission_color\", new_color)
+#		color = new_color
 
 func _on_influenceArea_body_entered(body: Node) -> void:
 	if(body.collision_layer == CollisionEnums.COLLISION_PLAYER
@@ -41,7 +43,7 @@ func _on_influenceArea_body_entered(body: Node) -> void:
 		emit_signal(\"influence_entered\", body, self)
 "
 
-[sub_resource type="SphereShape" id=6]
+[sub_resource type="SphereShape" id=10]
 radius = 5.0
 
 [sub_resource type="SphereMesh" id=7]
@@ -78,8 +80,8 @@ void fragment() {
 
 [sub_resource type="ShaderMaterial" id=4]
 shader = SubResource( 3 )
-shader_param/albedo = Color( 0, 0.670588, 1, 1 )
-shader_param/emission_color = Color( 0, 0.670588, 1, 1 )
+shader_param/albedo = Color( 0, 0, 0, 1 )
+shader_param/emission_color = Color( 0, 0, 0, 1 )
 shader_param/emission_amount = 5.26
 shader_param/rim_steepness = 7.163
 shader_param/uv_scale = null
@@ -156,10 +158,10 @@ tracks/2/keys = {
 [node name="influenceArea" type="Area"]
 collision_layer = 32
 collision_mask = 0
-script = SubResource( 5 )
+script = SubResource( 6 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-shape = SubResource( 6 )
+shape = SubResource( 10 )
 
 [node name="influence" type="MeshInstance" parent="."]
 transform = Transform( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )

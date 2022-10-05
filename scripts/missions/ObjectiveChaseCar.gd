@@ -12,6 +12,7 @@ onready var car_path : PathAI = $PathAI
 
 func _setup() -> void:
 	._setup()
+	setup_marker($car/vehicle, load("res://art/sprites/markerFollowCar.png"))
 	car_to_follow.get_node("vehicle").set_ai_path(car_path)
 	car_to_follow.get_node("vehicle").AI = true
 	car_path.connect("path_finished", self, "_complete_objective")
@@ -21,7 +22,7 @@ func _setup() -> void:
 		get_parent().get_parent().UI.get_node("missionUI/info/VBoxContainer/npcScapeDistance").max_value = minimum_distance
 		
 func _process(delta: float) -> void:
-	var player : KinematicBody = get_parent().get_parent().get_parent().get_parent().get_node("player")
+	var player : KinematicBody = get_parent().get_parent().get_parent().get_parent().get_parent().get_node("player")
 	var vehicle : VehicleBody = car_to_follow.get_node("vehicle")
 #	var distance : Vector3 = vehicle.global_transform.origin - player.global_transform.origin
 	var distance : float = vehicle.global_transform.origin.distance_to(player.global_transform.origin)
@@ -30,4 +31,4 @@ func _process(delta: float) -> void:
 		get_parent().get_parent().UI.get_node("missionUI/info/VBoxContainer/npcScapeDistance").value = lerp(get_parent().get_parent().UI.get_node("missionUI/info/VBoxContainer/npcScapeDistance").value, distance, 0.03)
 	
 	if(distance >= minimum_distance and minimum_distance > 0):
-		emit_signal("objective_failed")
+		fail_mission()

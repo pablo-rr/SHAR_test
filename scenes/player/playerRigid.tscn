@@ -1,0 +1,156 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/player/amogus.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends KinematicBody
+
+## Walk speed of the character
+export var walk_speed : float = 10.0
+## Jump force of the character
+export var jump_force : float = 1.5
+## Number of jumps the player can make before touching the floor again
+export var max_jumps : int = 1
+## How fast will the player fall
+export var gravity : float = 0.09
+## Maximum vertical rotation admitted. Keep it below 90º not to do a 360 with the camera
+export var camera_max_vertical_rotation : float = 50.0
+## Minimum vertical rotation admitted. Keep it below 90º not to do a 360 with the camera
+export var camera_min_vertical_rotation : float = -50.0
+
+onready var camera_rotation_horizontal : float = 0.0
+onready var camera_rotation_vertical : float = 0.0
+onready var forward_degrees_offset : int = -90
+onready var backwards_degrees_offset : int = 90
+onready var left_degrees_offset : int = 0
+onready var right_degrees_offset : int = 180
+onready var current_speed : float = 0.0
+onready var camera_direction : Vector3 = Vector3.ZERO
+onready var keys_direction : Vector3 = Vector3.ZERO
+onready var total_direction : Vector3 = Vector3.ZERO
+onready var direction_degrees_offset : int = 0
+onready var fall_speed : float = 0.0
+onready var is_touching_floor : bool = false
+onready var jumps_available : int = 1
+onready var enabled : bool = true
+
+#func _ready() -> void:
+#	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+# Called when the node enters the scene tree for the first time.
+func _input(event: InputEvent) -> void:
+	if(enabled):
+		camera_inputs(event)
+
+func _physics_process(delta: float) -> void:
+	if(enabled):
+		movement()
+
+func rotate_character_mesh() -> void:
+	$Mesh.rotation_degrees.y = lerp($Mesh.rotation_degrees.y, $camPivotY.rotation_degrees.y + direction_degrees_offset, 0.12)
+
+func camera_inputs(event: InputEvent) -> void:
+	if(event is InputEventMouseMotion):
+#		Input.warp_mouse_position(OS.window_size/2)
+		camera_rotation_vertical += event.relative.y
+		camera_rotation_horizontal -= event.relative.x
+		if(camera_rotation_vertical < camera_min_vertical_rotation):
+			camera_rotation_vertical = camera_min_vertical_rotation
+		elif(camera_rotation_vertical > camera_max_vertical_rotation):
+			camera_rotation_vertical = camera_max_vertical_rotation
+			
+func movement() -> void:
+#	Move direction to calculate where player should be going depending on camera's rotation and direction key pressed
+	var snapped : bool = true
+	var move_direction : Vector3 = $camPivotY/follow.global_transform.origin - global_transform.origin
+	$camPivotY.rotation_degrees.y = lerp($camPivotY.rotation_degrees.y, camera_rotation_horizontal, 0.15)
+	$camPivotY/camPivotX.rotation_degrees.x = lerp($camPivotY/camPivotX.rotation_degrees.x, camera_rotation_vertical, 0.15)
+	camera_direction = Vector3.ZERO
+	keys_direction = Vector3.ZERO
+	direction_degrees_offset = 0
+	current_speed = 0
+	
+	if(!is_on_floor()):
+		fall_speed -= gravity
+	else:
+		jumps_available = max_jumps
+		
+#	Move direction's Y is determined by gravity instead of following the $follow node
+	move_direction.y = fall_speed
+	
+	if(Input.is_action_pressed(\"ui_up\")):
+		keys_direction.z = 1
+		direction_degrees_offset = forward_degrees_offset
+		current_speed = walk_speed
+		rotate_character_mesh()
+	elif(Input.is_action_pressed(\"ui_down\")):
+		keys_direction.z = -1
+		direction_degrees_offset = backwards_degrees_offset
+		current_speed = walk_speed
+		rotate_character_mesh()
+		
+	if(Input.is_action_pressed(\"ui_left\")):
+		keys_direction.x = 1
+		direction_degrees_offset = left_degrees_offset
+		current_speed = walk_speed
+		rotate_character_mesh()
+	elif(Input.is_action_pressed(\"ui_right\")):
+		keys_direction.x = -1
+		direction_degrees_offset = right_degrees_offset
+		current_speed = walk_speed
+		rotate_character_mesh()
+		
+	if(keys_direction == Vector3.ZERO and is_on_floor()):
+		fall_speed = -0.01
+		
+	if(Input.is_action_pressed(\"ui_jump\") and jumps_available >= max_jumps):
+		fall_speed = jump_force
+		jumps_available -= 1
+#		Disable snap so the player is not attached to the floor and it is able to jump
+		snapped = false
+	
+	keys_direction = keys_direction.normalized()
+	camera_direction = Vector3(-cos(deg2rad($camPivotY.rotation_degrees.y + direction_degrees_offset)), 0, sin(deg2rad($camPivotY/camPivotX.rotation_degrees.y + direction_degrees_offset)))
+	total_direction = ((keys_direction.normalized() - camera_direction)).normalized()
+	$camPivotY/follow.transform.origin = lerp($camPivotY/follow.transform.origin, keys_direction, 0.09)
+	
+	if(keys_direction != Vector3.ZERO):
+		$Mesh.look_at($camPivotY/follow.global_transform.origin, Vector3(0, 1, 0))
+		$Mesh.rotation_degrees.x = 0
+		$Mesh.rotation_degrees.y += 90
+		$Mesh.rotation_degrees.z = 0
+		
+	if(snapped):
+		move_and_slide_with_snap(move_direction * walk_speed, Vector3(0, -1, 0), Vector3(0, 1, 0), false)
+	else:
+		move_and_slide(move_direction * walk_speed, Vector3(0, 1, 0))
+"
+
+[sub_resource type="CylinderShape" id=8]
+height = 3.73036
+
+[node name="playerRigid" type="RigidBody"]
+mode = 3
+script = SubResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 5.32907e-15, 0, -5.32907e-15, 0.5, 0, -0.186998, 0 )
+shape = SubResource( 8 )
+
+[node name="Mesh" parent="." instance=ExtResource( 1 )]
+
+[node name="camPivotY" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+
+[node name="follow" type="Position3D" parent="camPivotY"]
+transform = Transform( 1, 0, 0, 0, 0.969299, 0.245883, 0, -0.245883, 0.969299, 0, 0, 0 )
+
+[node name="camPivotX" type="Position3D" parent="camPivotY"]
+transform = Transform( 1, 0, 0, 0, 0.9693, -0.245883, 0, 0.245883, 0.9693, 0, 0, 0 )
+
+[node name="Camera" type="Camera" parent="camPivotY/camPivotX"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -6 )
+current = true
+
+[node name="floorDetector" type="RayCast" parent="."]
+cast_to = Vector3( 0, -1.344, 0 )

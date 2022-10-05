@@ -5,6 +5,9 @@
 [sub_resource type="GDScript" id=3]
 script/source = "extends KinematicBody
 
+signal entered_car
+signal exited_car
+
 ## Walk speed of the character
 export var walk_speed : float = 10.0
 ## Jump force of the character
@@ -121,16 +124,18 @@ func movement() -> void:
 		$Mesh.rotation_degrees.z = 0
 		
 	if(snapped):
-		move_and_slide_with_snap(move_direction * walk_speed, Vector3(0, -1, 0), Vector3(0, 1, 0), false)
+		move_and_slide_with_snap(move_direction * walk_speed, Vector3(0, -1, 0), Vector3(0, 1, 0), false, 4, 0.79, false)
 	else:
-		move_and_slide(move_direction * walk_speed, Vector3(0, 1, 0))
+		move_and_slide(move_direction * walk_speed, Vector3(0, 1, 0), false, 4, 0.79, false)
 "
 
 [sub_resource type="CylinderShape" id=8]
 height = 3.73036
 
 [node name="player" type="KinematicBody"]
+collision_mask = 16
 script = SubResource( 3 )
+jump_force = 1.75
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 5.32907e-15, 0, -5.32907e-15, 0.5, 0, -0.186998, 0 )

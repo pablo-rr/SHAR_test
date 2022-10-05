@@ -2,36 +2,53 @@ class_name MissionManager
 extends Node
 
 export var next_mission_id : int = -1
-export var mission_id : int = 0
 
+onready var mission_id : int = 0
+onready var trigger : Node = null
+onready var mission_dialog : Spatial = null
 onready var objective_manager : ObjectiveManager = $ObjectiveManager
-onready var mission_npc_giver : RigidBody = $npcRigid
-onready var npc_path : PathAI = $predefinedNpcPath
-onready var mission_dialog : Spatial = $dialogManager
 
-onready var UI : CanvasLayer = get_parent().get_parent().get_node("ui")
+onready var UI : CanvasLayer = get_parent().get_parent().get_parent().get_node("ui")
 
-func _ready() -> void:
+#func _ready() -> void:
+#	setup()
+	
+func setup() -> void:
 	var mission : Dictionary = MissionData.get_mission_by_id(mission_id)
-	mission_npc_giver.set_ai_path(npc_path)
-	mission_npc_giver.connect("mission_assigned", self, "play_dialog")
-	mission_dialog.connect("dialog_finished", self, "show_mission_objective")
 	objective_manager.connect("mission_completed", self, "load_next_mission")
 	UI.get_node("missionUI/objective/title").text = mission.title
 	UI.get_node("missionUI/objective/description").text = mission.description
 	UI.get_node("missionUI/objective/NinePatchRect/TextureRect").texture = load(mission.objective_image)
 	UI.get_node("missionUI/objective/continue").connect("pressed", self, "start_mission")
+	UI.get_node("missionUI/missionFailed/HBoxContainer/yes").connect("pressed", self, "reset")
+	UI.get_node("missionUI/missionFailed/HBoxContainer/no").connect("pressed", self, "cancel")
 	
-func play_dialog() -> void:
-	mission_dialog.start()
+	var audio_stream_player : AudioStreamPlayer = AudioStreamPlayer.new()
+	audio_stream_player.bus = "Music"
+	audio_stream_player.name = "audio_stream_player"
+	add_child(audio_stream_player)
 	
-func show_mission_objective() -> void:
-	UI.get_node("missionUI").show_mission_objective()
+#	UI.get_node("missionUI/missionFailed/HBoxContainer/no").connect("pressed", self, "reset")
+	
+func reset() -> void:
+	get_parent().get_parent().get_parent().can_pause = true
+	get_tree().paused = false
+	trigger.instance_mission(mission_id, true)
+	trigger.get_node("npcRigid").assign_mission_skip_dialog()
+	get_parent().get_parent().get_parent().get_node("player").global_transform.origin = trigger.dialog_manager.get_node("character1Position").global_transform.origin
+	queue_free()
+	
+func cancel() -> void:
+	get_parent().get_parent().get_parent().can_pause = true
+	get_tree().paused = false
+	trigger.get_node("npcRigid").reset_mission_assignment()
+	UI.get_node("missionUI").hide_mission_failed()
+	queue_free()
 	
 func start_mission() -> void:
-#	mission_dialog.end()
+	get_tree().paused = false
+	get_parent().get_parent().get_parent().can_pause = true
 	UI.get_node("missionUI").hide_mission_objective()
-#	UI.get_node("missionUI").end_cinematic()
 	objective_manager.start_mission()
 	
 func load_next_mission() -> void:
@@ -39,5 +56,3 @@ func load_next_mission() -> void:
 		var mission : Dictionary = MissionData.get_mission_by_id(next_mission_id)
 		var mission_instance = load(mission.reference).instance()
 		get_parent().add_child(mission_instance)
-
-

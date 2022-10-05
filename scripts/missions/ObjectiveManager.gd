@@ -8,6 +8,7 @@ signal mission_started
 onready var objectives : Array = []
 onready var current_objective_index : int = 0
 onready var current_objective : Node = null
+onready var last_objective_time : float = 0.0
 
 func start_mission() -> void:
 	get_next_objective()
@@ -15,10 +16,15 @@ func start_mission() -> void:
 func _ready() -> void:
 	for child in get_children():
 		objectives.append(child)
-		child.visible = false
+		if(!child.always_visible):
+			child.visible = false
 
 	connect("mission_completed", self, "complete_mission")
-		
+	
+func show_next_objective() -> void:
+	if(current_objective_index < objectives.size() -1):
+		objectives[current_objective_index +1].visible = true
+	
 func get_next_objective() -> void:
 	if(current_objective == null):
 		current_objective = objectives[0]
@@ -39,10 +45,16 @@ func get_next_objective() -> void:
 		current_objective._setup()
 		current_objective.connect("objective_failed", self, "fail_mission")
 		current_objective.connect("objective_completed", self, "get_next_objective")
+		
+	if(current_objective.use_remaining_time):
+		current_objective.time = last_objective_time
 	current_objective.visible = true
+	show_next_objective()
 		
 func fail_mission() -> void:
-	print("Mission failed")
+	get_parent().get_parent().get_parent().get_parent().can_pause = false
+	get_tree().paused = true
+	get_parent().UI.get_node("missionUI").show_mission_failed()
 	
 func complete_mission() -> void:
 	get_parent().UI.get_node("missionUI").show_mission_completed()

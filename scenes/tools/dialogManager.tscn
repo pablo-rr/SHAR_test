@@ -5,17 +5,16 @@ script/source = "extends Spatial
 
 signal dialog_finished
 
-export var character_1_path : NodePath
-export var character_2_path : NodePath
 export var character_1_height_offset : float = 0.0
 export var character_2_height_offset : float = 0.0
 
-onready var character_1 : Spatial = get_node(character_1_path)
-onready var character_2 : Spatial = get_node(character_2_path)
+onready var character_1 : Spatial = get_parent().get_parent().get_parent().get_parent().get_node(\"player\")
+onready var character_2 : Spatial = get_parent().get_node(\"npcRigid\")
 
 onready var dialog_parts : Array = []
 onready var current_dialog_part : int = 0
 onready var active : bool = false
+onready var current_dialog_audio : AudioStreamPlayer = null
 
 func _ready() -> void:
 	$character1Position.global_transform.origin.y += character_1_height_offset
@@ -28,6 +27,8 @@ func _ready() -> void:
 			dialog_parts.append(child)
 			
 func start() -> void:
+	get_parent().get_parent().get_parent().get_parent().can_pause = false
+	print(get_parent().get_parent().get_parent().get_parent().can_pause)
 	get_parent().UI.get_node(\"missionUI\").start_cinematic()
 	get_parent().UI.get_node(\"carUI\").visible = false
 	get_parent().UI.get_node(\"generalUI\").visible = false
@@ -38,7 +39,6 @@ func start() -> void:
 	
 	character_1.set_physics_process(false)
 	character_2.set_physics_process(false)
-	\"res://resources/fonts/data/coolvetica.ttf\"
 	if(character_1.collision_layer == CollisionEnums.COLLISION_NPC):
 		character_1.axis_lock_linear_x = true
 		character_1.axis_lock_linear_y = true
@@ -47,6 +47,16 @@ func start() -> void:
 		character_2.axis_lock_linear_x = true
 		character_2.axis_lock_linear_y = true
 		character_2.axis_lock_linear_z = true
+		
+	character_1.get_node(\"Mesh\").look_at($character2Position.global_transform.origin, Vector3(0, 1, 0))
+	character_1.get_node(\"Mesh\").rotation_degrees.x = 0
+	character_1.get_node(\"Mesh\").rotation_degrees.y += 90
+	character_1.get_node(\"Mesh\").rotation_degrees.z = 0
+	
+	character_2.get_node(\"Mesh\").look_at($character1Position.global_transform.origin, Vector3(0, 1, 0))
+	character_2.get_node(\"Mesh\").rotation_degrees.x = 0
+	character_2.get_node(\"Mesh\").rotation_degrees.y += 90
+	character_2.get_node(\"Mesh\").rotation_degrees.z = 0
 		
 	play_dialog()
 	
@@ -77,6 +87,8 @@ func end() -> void:
 func play_dialog() -> void:
 	var dialog : DialogPart = dialog_parts[current_dialog_part]
 	var dialog_audio = AudioStreamPlayer.new()
+	current_dialog_audio = dialog_audio
+	dialog_audio.bus = \"Dialogs\"
 	dialog_audio.stream = dialog.dialog_audio
 	dialog_audio.connect(\"finished\", self, \"next_dialog\", [dialog])
 	
@@ -99,6 +111,10 @@ func next_dialog(previous_dialog : DialogPart):
 		play_dialog()
 	elif(active):
 		end()
+		
+func skip() -> void:
+	dialog_parts[current_dialog_part].get_node(\"AudioStreamPlayer\").stop()
+	end()
 	
 "
 

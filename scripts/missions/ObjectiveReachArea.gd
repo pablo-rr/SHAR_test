@@ -15,6 +15,8 @@ func _setup() -> void:
 	
 	if(has_area_node):
 		area.connect("influence_entered", self, "_complete_objective")
+		area.get_node("influence").get_surface_material(0).set_shader_param("albedo", Color(1, 0, 0))
+		area.get_node("influence").get_surface_material(0).set_shader_param("emission_color", Color(1, 0, 0))
 	
 func _complete_objective(player : Node = null, area : Node = null) -> void:
 	if(active):
