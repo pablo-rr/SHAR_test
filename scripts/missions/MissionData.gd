@@ -6,7 +6,7 @@ var mission_data : Dictionary = {
 		,description = tr("msndsc_missionTest1")
 		,objective_image = "res://art/UI/missions/mission_test.png"
 		,trigger = preload("res://scenes/missions/triggers/MissionTriggerTest1.tscn")
-		,reference = preload("res://scenes/missions/missions/MissionTest1.tscn")
+		,reference = preload("res://scenes/missions/missions/MissionTest2.tscn")
 	}
 	,
 }

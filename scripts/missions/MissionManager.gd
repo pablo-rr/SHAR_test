@@ -1,4 +1,4 @@
-class_name MissionManager
+class_name MissionManager, "res://art/nodeIcons/treasure-map(1).png"
 extends Node
 
 export var next_mission_id : int = -1

@@ -1,4 +1,4 @@
-class_name ObjectiveChaseCar
+class_name ObjectiveChaseCar, "res://art/nodeIcons/police-car.png"
 extends "res://scripts/missions/Objective.gd"
 
 export var minimum_distance : int = 0

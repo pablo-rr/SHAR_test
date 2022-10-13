@@ -1,4 +1,4 @@
-class_name ObjectiveReachArea
+class_name ObjectiveReachArea, "res://art/nodeIcons/path-distance.png"
 extends "res://scripts/missions/Objective.gd"
 
 onready var area : Node = null

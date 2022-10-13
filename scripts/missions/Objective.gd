@@ -1,4 +1,4 @@
-class_name Objective
+class_name Objective, "res://art/nodeIcons/flag-objective.png"
 extends Spatial
 
 signal objective_completed

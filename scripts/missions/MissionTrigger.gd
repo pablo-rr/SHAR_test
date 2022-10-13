@@ -1,4 +1,4 @@
-class_name MissionTrigger
+class_name MissionTrigger, "res://art/nodeIcons/movement-sensor.png"
 extends Node
 
 export var mission_id : int = 0

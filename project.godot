@@ -55,6 +55,11 @@ _global_script_classes=[ {
 "path": "res://scripts/missions/ObjectiveManager.gd"
 }, {
 "base": "Spatial",
+"class": "ObjectivePickUpItems",
+"language": "GDScript",
+"path": "res://scripts/missions/ObjectivePickUpItems.gd"
+}, {
+"base": "Spatial",
 "class": "ObjectiveReachArea",
 "language": "GDScript",
 "path": "res://scripts/missions/ObjectiveReachArea.gd"
@@ -68,13 +73,14 @@ _global_script_class_icons={
 "ButtonCool": "",
 "DebugCamera": "",
 "DialogPart": "",
-"MissionManager": "",
-"MissionTrigger": "",
-"Objective": "",
-"ObjectiveChaseCar": "",
-"ObjectiveGetInCar": "",
-"ObjectiveManager": "",
-"ObjectiveReachArea": "",
+"MissionManager": "res://art/nodeIcons/treasure-map(1).png",
+"MissionTrigger": "res://art/nodeIcons/movement-sensor.png",
+"Objective": "res://art/nodeIcons/flag-objective.png",
+"ObjectiveChaseCar": "res://art/nodeIcons/police-car.png",
+"ObjectiveGetInCar": "res://art/nodeIcons/race-car.png",
+"ObjectiveManager": "res://art/nodeIcons/checkbox-tree.png",
+"ObjectivePickUpItems": "res://art/nodeIcons/ecology.png",
+"ObjectiveReachArea": "res://art/nodeIcons/path-distance.png",
 "PathAI": ""
 }
 

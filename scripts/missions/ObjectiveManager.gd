@@ -1,4 +1,4 @@
-class_name ObjectiveManager
+class_name ObjectiveManager, "res://art/nodeIcons/checkbox-tree.png"
 extends Spatial
 
 signal mission_completed

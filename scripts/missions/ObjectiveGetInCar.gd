@@ -1,4 +1,4 @@
-class_name ObjectiveGetInCar
+class_name ObjectiveGetInCar, "res://art/nodeIcons/race-car.png"
 extends "res://scripts/missions/Objective.gd"
 
 onready var player_car_marker : Sprite3D = null
